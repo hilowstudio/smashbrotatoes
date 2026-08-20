@@ -1,0 +1,60 @@
+name: Build
+
+# Per-PR compile gate. Builds the BattleShip binary on Windows (MSVC) on every
+# pull_request and push to main, so a contribution that fails to compile is
+# caught before review and merge.
+#
+# Build-only by design: never packages an installer, never produces
+# BattleShip.o2r. ROM-independent end-to-end. Dep lists and build invocation
+# mirror release.yml's Windows job minus packaging, so a green run here predicts
+# a green release build.
+#
+# Codegen (credits text, CSS scroll-arrow PNGs, reloc tables, embedded icon) is
+# driven entirely by CMake custom targets/commands — no manual presteps here;
+# we only ensure their tools (Python3 + Pillow) are present, then configure +
+# build and let CMake run them as build dependencies.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:    # manual trigger for smoke-testing
+
+permissions:
+  contents: read
+
+# A fresh push to a PR branch cancels the previous, still-running build for the
+# same ref — no point spending runner minutes finishing a stale commit.
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  windows:
+    name: Windows (MSVC)
+    runs-on: windows-2022
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The updater derives the version via `git describe --tags` at
+          # configure time; a shallow clone omits tags and breaks configure.
+          fetch-depth: 0
+      - name: Install build deps
+        # SDL2 comes from vcpkg, bootstrapped by libultraship's CMake. Pillow
+        # for the unconditional CSS-arrow codegen.
+        run: |
+          choco install ninja -y
+          python -m pip install --upgrade pip
+          python -m pip install Pillow
+        shell: pwsh
+      - name: Configure
+        # Default Visual Studio multi-config generator (build with
+        # --config Release; no vcvars needed). Pin Python3_EXECUTABLE to the
+        # same `python` pip installed Pillow under — GHA Windows images ship
+        # multiple interpreters and CMake's FindPython can otherwise pick one
+        # without Pillow, failing the CSS-arrow rules mid-build.
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release "-DPython3_EXECUTABLE=$((Get-Command python).Source)"
+        shell: pwsh
+      - name: Build
+        run: cmake --build build --config Release -j 4

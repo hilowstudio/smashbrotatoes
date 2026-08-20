@@ -1,0 +1,130 @@
+name: Release
+
+# Triggered by:
+#   - Pushing a tag matching v* (e.g. v1.0.0, v0.1-test)
+#   - Manual dispatch from the GitHub UI for smoke-testing
+#
+# The build-windows job builds the releasable packages, matrixed over ROM
+# versions. Windows emits exactly two packages: US and JP. The US package
+# includes scripting/modding support by default; JP keeps scripting disabled
+# until the TCC mod API is region-aware. It builds through
+# scripts/package-windows.ps1 (SSB64_VERSION selects the region). A final
+# `release` job stitches the artifacts into a GitHub Release attached to the
+# tag.
+#
+# US keeps the historical artifact name (BattleShip-windows.zip) so existing
+# links and the in-app updater are unaffected; JP is BattleShip-JP-windows.zip.
+#
+# The build is ROM-independent end-to-end: BattleShip.o2r is NEVER produced
+# by CI. Users extract it from their own ROM via the ImGui first-run
+# wizard at launch (the JP build bundles yamls/jp + the shared config.yml,
+# which routes by the user's ROM hash).
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:    # manual trigger; no Release is created
+
+permissions:
+  contents: write       # softprops/action-gh-release needs this on the
+                        # final job to attach assets and create the
+                        # Release. Read-only on every other step.
+  id-token: write       # actions/attest signs provenance via OIDC.
+  attestations: write   # publish artifact attestations for release assets.
+
+jobs:
+  build-windows:
+    name: build-windows (${{ matrix.version }})
+    runs-on: windows-2022
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - version: us
+            enable_scripting: "1"
+            artifact_name: BattleShip-windows-us
+            artifact_path: dist/BattleShip-windows.zip
+          - version: jp
+            enable_scripting: "0"
+            artifact_name: BattleShip-windows-jp
+            artifact_path: dist/BattleShip-JP-windows.zip
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # fetch-depth: 0 grabs full history + all tags in one operation.
+          # The built-in updater derives the version from `git describe
+          # --tags` at configure time; checkout@v4's default shallow clone
+          # omits tags. This used to be `fetch-tags: true`, but recent
+          # actions/checkout@v4 minor versions regressed on tag-triggered
+          # workflows — the action tries to fetch BOTH the triggering
+          # commit SHA AND refs/tags/<tag> and refuses with "Cannot fetch
+          # both <sha> and refs/tags/<tag> to refs/tags/<tag>". Using
+          # fetch-depth: 0 sidesteps the conflict.
+          fetch-depth: 0
+      - name: Install build deps
+        # Windows runner ships with cmake / Visual Studio Build Tools
+        # already. SDL2 comes from vcpkg, which is integrated by
+        # libultraship/CMakeLists's vcpkg bootstrap.
+        #
+        # Pillow: tools/generate_arrow_svg.py + tools/png_to_c_array.py
+        # (CSS scroll-arrow PNG generation + bake-to-C-header) import PIL.
+        # The arrow rules in CMakeLists.txt are unconditional.
+        run: |
+          choco install ninja -y
+          python -m pip install --upgrade pip
+          python -m pip install Pillow
+        shell: pwsh
+      - name: Package Windows zip (${{ matrix.version }})
+        env:
+          SSB64_VERSION: ${{ matrix.version }}
+          SSB64_ENABLE_SCRIPTING: ${{ matrix.enable_scripting }}
+        run: pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/package-windows.ps1
+        shell: pwsh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.artifact_path }}
+          if-no-files-found: error
+
+  release:
+    name: Publish GitHub Release
+    needs: [build-windows]
+    if: startsWith(github.ref, 'refs/tags/v')   # only on tag pushes
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      - name: Generate SHA256SUMS.txt
+        run: |
+          find artifacts -maxdepth 1 -type f ! -name SHA256SUMS.txt -print0 \
+            | sort -z \
+            | xargs -0 sha256sum > release-subjects.sha256
+          find artifacts -maxdepth 1 -type f ! -name SHA256SUMS.txt -print0 \
+            | sort -z \
+            | while IFS= read -r -d '' file; do
+                (cd artifacts && sha256sum "$(basename "$file")")
+              done > artifacts/SHA256SUMS.txt
+          cat artifacts/SHA256SUMS.txt
+      - name: Attest release assets
+        uses: actions/attest@v4
+        with:
+          subject-checksums: release-subjects.sha256
+      - name: Attest checksum manifest
+        uses: actions/attest@v4
+        with:
+          subject-path: artifacts/SHA256SUMS.txt
+      - name: Publish Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/BattleShip-windows.zip
+            artifacts/BattleShip-JP-windows.zip
+            artifacts/SHA256SUMS.txt
+          generate_release_notes: true
+          draft: true   # land as a draft so a human can sanity-check
+                        # before the release is visible to the public.
