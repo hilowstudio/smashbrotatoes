@@ -109,13 +109,6 @@ set(GBI_UCODE "F3DEX_GBI_2" CACHE STRING "" FORCE)
 # build time (via ExternalProject below) to extract the user's ROM assets.
 set(USE_STANDALONE ON CACHE BOOL "" FORCE)
 set(BUILD_STORMLIB OFF CACHE BOOL "" FORCE)
-set(BUILD_SM64 OFF CACHE BOOL "" FORCE)
-set(BUILD_MK64 OFF CACHE BOOL "" FORCE)
-set(BUILD_SF64 OFF CACHE BOOL "" FORCE)
-set(BUILD_PM64 OFF CACHE BOOL "" FORCE)
-set(BUILD_FZERO OFF CACHE BOOL "" FORCE)
-set(BUILD_MARIO_ARTIST OFF CACHE BOOL "" FORCE)
-set(BUILD_NAUDIO ON CACHE BOOL "" FORCE)
 set(BUILD_SSB64 ON CACHE BOOL "" FORCE)
 
 ################################################################################
@@ -162,13 +155,6 @@ ExternalProject_Add(TorchExternal
         -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/torch-install
         -DUSE_STANDALONE=ON
         -DBUILD_STORMLIB=OFF
-        -DBUILD_SM64=OFF
-        -DBUILD_MK64=OFF
-        -DBUILD_SF64=OFF
-        -DBUILD_PM64=OFF
-        -DBUILD_FZERO=OFF
-        -DBUILD_MARIO_ARTIST=OFF
-        -DBUILD_NAUDIO=ON
         -DBUILD_SSB64=ON
 )
 

@@ -1,0 +1,12 @@
+MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+  Packaging Fast3D shaders into f3d.o2r
+  Encoding credits text assets (us)
+  Generating reloc headers and RelocFileTable (us)
+  Loaded 4230 symbols from tools\reloc_data_symbols.us.txt
+  Scanned src/ and found 5682 ll* references
+    3911 referenced symbols resolve from the table
+    1771 referenced symbols stub to ((intptr_t)0)
+  Wrote include\reloc_data.us.h (6001 total #defines)
+  Generated port\resource\RelocFileTable.us.cpp (2132 entries)
+  Generated port\resource\RelocFileTable.us.h (RELOC_FILE_COUNT=2132)

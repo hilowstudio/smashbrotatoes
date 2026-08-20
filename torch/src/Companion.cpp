@@ -29,95 +29,16 @@
 #include "factories/ViewportFactory.h"
 #include "factories/CompressedTextureFactory.h"
 
-#ifdef SM64_SUPPORT
-#include "factories/sm64/AnimationFactory.h"
-#include "factories/sm64/BehaviorScriptFactory.h"
-#include "factories/sm64/CollisionFactory.h"
-#include "factories/sm64/DialogFactory.h"
-#include "factories/sm64/DictionaryFactory.h"
-#include "factories/sm64/TextFactory.h"
-#include "factories/sm64/GeoLayoutFactory.h"
-#include "factories/sm64/LevelScriptFactory.h"
-#include "factories/sm64/MacroFactory.h"
-#include "factories/sm64/MovtexFactory.h"
-#include "factories/sm64/MovtexQuadFactory.h"
-#include "factories/sm64/PaintingFactory.h"
-#include "factories/sm64/PaintingMapFactory.h"
-#include "factories/sm64/TrajectoryFactory.h"
-#include "factories/sm64/WaterDropletFactory.h"
-#endif
 
-#ifdef MK64_SUPPORT
-#include "factories/mk64/CourseVtx.h"
-#include "factories/mk64/Paths.h"
-#include "factories/mk64/TrackSections.h"
-#include "factories/mk64/SpawnData.h"
-#include "factories/mk64/UnkSpawnData.h"
-#include "factories/mk64/DrivingBehaviour.h"
-#include "factories/mk64/ItemCurve.h"
-#include "factories/mk64/CourseMetadata.h"
-#include "factories/mk64/PackedDisplayListFactory.h"
-#endif
 
-#ifdef SF64_SUPPORT
-#include "factories/sf64/ColPolyFactory.h"
-#include "factories/sf64/MessageFactory.h"
-#include "factories/sf64/MessageLookupFactory.h"
-#include "factories/sf64/SkeletonFactory.h"
-#include "factories/sf64/AnimFactory.h"
-#include "factories/sf64/ScriptFactory.h"
-#include "factories/sf64/HitboxFactory.h"
-#include "factories/sf64/EnvironmentFactory.h"
-#include "factories/sf64/ObjInitFactory.h"
-#include "factories/sf64/TriangleFactory.h"
-#endif
 
-#ifdef PM64_SUPPORT
-#include "factories/pm64/SpriteFactory.h"
-#include "factories/pm64/ShapeFactory.h"
-#include "factories/pm64/BackgroundFactory.h"
-#include "factories/pm64/CollisionFactory.h"
-#include "factories/pm64/MapTextureFactory.h"
-#include "factories/pm64/AudioFactory.h"
-#include "factories/pm64/StoryImageFactory.h"
-#include "factories/pm64/ImgFXAnimFactory.h"
-#include "factories/pm64/TitleDataFactory.h"
-#endif
 
-#ifdef FZERO_SUPPORT
-#include "factories/fzerox/EADAnimationFactory.h"
-#include "factories/fzerox/CourseFactory.h"
-#include "factories/fzerox/GhostRecordFactory.h"
-#include "factories/fzerox/EADLimbFactory.h"
-#include "factories/fzerox/SequenceFactory.h"
-#include "factories/fzerox/SoundFontFactory.h"
-#endif
 
-#ifdef MARIO_ARTIST_SUPPORT
-#include "factories/mario_artist/MA2D1Factory.h"
-#endif
 
 #ifdef SSB64_SUPPORT
 #include "factories/ssb64/RelocFactory.h"
 #endif
 
-#ifdef NAUDIO_SUPPORT
-#include "factories/naudio/v0/AudioHeaderFactory.h"
-#include "factories/naudio/v0/BankFactory.h"
-#include "factories/naudio/v0/SampleFactory.h"
-#include "factories/naudio/v0/SequenceFactory.h"
-
-#include "factories/naudio/v1/AudioContext.h"
-#include "factories/naudio/v1/SoundFontFactory.h"
-#include "factories/naudio/v1/AudioTableFactory.h"
-#include "factories/naudio/v1/InstrumentFactory.h"
-#include "factories/naudio/v1/SampleFactory.h"
-#include "factories/naudio/v1/DrumFactory.h"
-#include "factories/naudio/v1/EnvelopeFactory.h"
-#include "factories/naudio/v1/LoopFactory.h"
-#include "factories/naudio/v1/BookFactory.h"
-#include "factories/naudio/v1/SequenceFactory.h"
-#endif
 
 #include "preprocess/CompTool.h"
 
@@ -172,95 +93,16 @@ void Companion::Init(const ExportType type, std::atomic<size_t>& assetCount) {
     this->RegisterFactory("VP", std::make_shared<ViewportFactory>());
     this->RegisterFactory("COMPRESSED_TEXTURE", std::make_shared<CompressedTextureFactory>());
 
-#ifdef SM64_SUPPORT
-    this->RegisterFactory("SM64:DIALOG", std::make_shared<SM64::DialogFactory>());
-    this->RegisterFactory("SM64:TEXT", std::make_shared<SM64::TextFactory>());
-    this->RegisterFactory("SM64:DICTIONARY", std::make_shared<SM64::DictionaryFactory>());
-    this->RegisterFactory("SM64:ANIM", std::make_shared<SM64::AnimationFactory>());
-    this->RegisterFactory("SM64:BEHAVIOR_SCRIPT", std::make_shared<SM64::BehaviorScriptFactory>());
-    this->RegisterFactory("SM64:COLLISION", std::make_shared<SM64::CollisionFactory>());
-    this->RegisterFactory("SM64:GEO_LAYOUT", std::make_shared<SM64::GeoLayoutFactory>());
-    this->RegisterFactory("SM64:LEVEL_SCRIPT", std::make_shared<SM64::LevelScriptFactory>());
-    this->RegisterFactory("SM64:MACRO", std::make_shared<SM64::MacroFactory>());
-    this->RegisterFactory("SM64:MOVTEX_QUAD", std::make_shared<SM64::MovtexQuadFactory>());
-    this->RegisterFactory("SM64:MOVTEX", std::make_shared<SM64::MovtexFactory>());
-    this->RegisterFactory("SM64:PAINTING", std::make_shared<SM64::PaintingFactory>());
-    this->RegisterFactory("SM64:PAINTING_MAP", std::make_shared<SM64::PaintingMapFactory>());
-    this->RegisterFactory("SM64:TRAJECTORY", std::make_shared<SM64::TrajectoryFactory>());
-    this->RegisterFactory("SM64:WATER_DROPLET", std::make_shared<SM64::WaterDropletFactory>());
-#endif
 
-#ifdef MK64_SUPPORT
-    this->RegisterFactory("MK64:COURSE_VTX", std::make_shared<MK64::CourseVtxFactory>());
-    this->RegisterFactory("MK64:TRACK_PATH", std::make_shared<MK64::PathsFactory>());
-    this->RegisterFactory("MK64:TRACK_SECTIONS", std::make_shared<MK64::TrackSectionsFactory>());
-    this->RegisterFactory("MK64:SPAWN_DATA", std::make_shared<MK64::SpawnDataFactory>());
-    this->RegisterFactory("MK64:UNK_SPAWN_DATA", std::make_shared<MK64::UnkSpawnDataFactory>());
-    this->RegisterFactory("MK64:DRIVING_BEHAVIOUR", std::make_shared<MK64::DrivingBehaviourFactory>());
-    this->RegisterFactory("MK64:ITEM_CURVE", std::make_shared<MK64::ItemCurveFactory>()); // Item curve for decomp only
-    this->RegisterFactory("MK64:METADATA", std::make_shared<MK64::CourseMetadataFactory>());
-    this->RegisterFactory("MK64:PACKED_GFX", std::make_shared<MK64::PackedDListFactory>());
-#endif
 
-#ifdef PM64_SUPPORT
-    this->RegisterFactory("PM64:SPRITE", std::make_shared<PM64SpriteFactory>());
-    this->RegisterFactory("PM64:SHAPE", std::make_shared<PM64ShapeFactory>());
-    this->RegisterFactory("PM64:BACKGROUND", std::make_shared<PM64BackgroundFactory>());
-    this->RegisterFactory("PM64:COLLISION", std::make_shared<PM64CollisionFactory>());
-    this->RegisterFactory("PM64:MAP_TEXTURE", std::make_shared<PM64MapTextureFactory>());
-    this->RegisterFactory("PM64:AUDIO", std::make_shared<PM64AudioFactory>());
-    this->RegisterFactory("PM64:STORY_IMAGE", std::make_shared<PM64StoryImageFactory>());
-    this->RegisterFactory("PM64:IMGFX_ANIM", std::make_shared<PM64ImgFXAnimFactory>());
-    this->RegisterFactory("PM64:TITLE_DATA", std::make_shared<PM64TitleDataFactory>());
-#endif
 
-#ifdef SF64_SUPPORT
-    this->RegisterFactory("SF64:ANIM", std::make_shared<SF64::AnimFactory>());
-    this->RegisterFactory("SF64:SKELETON", std::make_shared<SF64::SkeletonFactory>());
-    this->RegisterFactory("SF64:MESSAGE", std::make_shared<SF64::MessageFactory>());
-    this->RegisterFactory("SF64:MSG_TABLE", std::make_shared<SF64::MessageLookupFactory>());
-    this->RegisterFactory("SF64:SCRIPT", std::make_shared<SF64::ScriptFactory>());
-    this->RegisterFactory("SF64:HITBOX", std::make_shared<SF64::HitboxFactory>());
-    this->RegisterFactory("SF64:ENVIRONMENT", std::make_shared<SF64::EnvironmentFactory>());
-    this->RegisterFactory("SF64:OBJECT_INIT", std::make_shared<SF64::ObjInitFactory>());
-    this->RegisterFactory("SF64:COLPOLY", std::make_shared<SF64::ColPolyFactory>());
-    this->RegisterFactory("SF64:TRIANGLE", std::make_shared<SF64::TriangleFactory>());
-#endif
 
-#ifdef FZERO_SUPPORT
-    this->RegisterFactory("FZX:ANIM", std::make_shared<FZX::EADAnimationFactory>());
-    this->RegisterFactory("FZX:COURSE", std::make_shared<FZX::CourseFactory>());
-    this->RegisterFactory("FZX:GHOST", std::make_shared<FZX::GhostRecordFactory>());
-    this->RegisterFactory("FZX:LIMB", std::make_shared<FZX::EADLimbFactory>());
-    this->RegisterFactory("FZX:SEQUENCE", std::make_shared<FZX::SequenceFactory>());
-    this->RegisterFactory("FZX:SOUNDFONT", std::make_shared<FZX::SoundFontFactory>());
-#endif
 
-#ifdef MARIO_ARTIST_SUPPORT
-    this->RegisterFactory("MA:MA2D1", std::make_shared<MA::MA2D1Factory>());
-#endif
 
 #ifdef SSB64_SUPPORT
     this->RegisterFactory("SSB64:RELOC", std::make_shared<SSB64::RelocFactory>());
 #endif
 
-#ifdef NAUDIO_SUPPORT
-    this->RegisterFactory("NAUDIO:V0:AUDIO_HEADER", std::make_shared<AudioHeaderFactory>());
-    this->RegisterFactory("NAUDIO:V0:SEQUENCE", std::make_shared<SequenceFactory>());
-    this->RegisterFactory("NAUDIO:V0:SAMPLE", std::make_shared<SampleFactory>());
-    this->RegisterFactory("NAUDIO:V0:BANK", std::make_shared<BankFactory>());
-
-    this->RegisterFactory("NAUDIO:V1:AUDIO_SETUP", std::make_shared<AudioContextFactory>());
-    this->RegisterFactory("NAUDIO:V1:AUDIO_TABLE", std::make_shared<AudioTableFactory>());
-    this->RegisterFactory("NAUDIO:V1:SOUND_FONT", std::make_shared<SoundFontFactory>());
-    this->RegisterFactory("NAUDIO:V1:INSTRUMENT", std::make_shared<InstrumentFactory>());
-    this->RegisterFactory("NAUDIO:V1:DRUM", std::make_shared<DrumFactory>());
-    this->RegisterFactory("NAUDIO:V1:SAMPLE", std::make_shared<NSampleFactory>());
-    this->RegisterFactory("NAUDIO:V1:ENVELOPE", std::make_shared<EnvelopeFactory>());
-    this->RegisterFactory("NAUDIO:V1:ADPCM_LOOP", std::make_shared<ADPCMLoopFactory>());
-    this->RegisterFactory("NAUDIO:V1:ADPCM_BOOK", std::make_shared<ADPCMBookFactory>());
-    this->RegisterFactory("NAUDIO:V1:SEQUENCE", std::make_shared<NSequenceFactory>());
-#endif
 #ifndef __EMSCRIPTEN__ // We call this manually
     this->Process(assetCount);
 #endif
@@ -697,13 +539,6 @@ void Companion::ProcessFile(YAML::Node root, std::atomic<size_t>& assetCount) {
         auto entryName = asset->first.as<std::string>();
         auto output = (this->gCurrentDirectory / entryName).string();
         std::replace(output.begin(), output.end(), '\\', '/');
-
-        if (node["type"]) {
-            const auto type = GetTypeNode(node);
-            if (type == "NAUDIO:V0:SAMPLE") {
-                AudioManager::Instance->bind_sample(node, output);
-            }
-        }
 
         if (!node["offset"]) {
             continue;
@@ -1336,7 +1171,6 @@ void Companion::Process(std::atomic<size_t>& assetCount) {
 
     SPDLOG_CRITICAL("------------------------------------------------");
 
-    AudioManager::Instance = new AudioManager();
     BinaryWrapper* wrapper = nullptr;
 
     if (this->gConfig.exporterType == ExportType::Binary) {

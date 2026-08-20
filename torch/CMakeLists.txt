@@ -12,22 +12,10 @@ option(USE_STANDALONE "Build as a standalone executable" ON)
 option(BUILD_STORMLIB "Build with StormLib support" OFF)
 option(ENABLE_ASAN "Enable AddressSanitizer" OFF)
 
-option(BUILD_SM64 "Build with Super Mario 64 support" ON)
-option(BUILD_MK64 "Build with Mario Kart 64 support" ON)
-option(BUILD_SF64 "Build with Star Fox 64 support" ON)
-option(BUILD_PM64 "Build with Paper Mario support" ON)
-option(BUILD_FZERO "Build with F-Zero X support" ON)
-option(BUILD_MARIO_ARTIST "Build with Mario Artist support" ON)
-option(BUILD_NAUDIO "Build with NAudio support" ON)
-
-if(EMSCRIPTEN)
-    set(BUILD_SM64 OFF) # TODO: This is broken for some reason
-    add_definitions(-D__EMSCRIPTEN__)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --bind -lidbfs.js -s MODULARIZE=1 -s EXPORT_ES6=1 -s NO_DISABLE_EXCEPTION_CATCHING -s ALLOW_MEMORY_GROWTH=1 -s EXPORT_NAME=createModule -s EXPORTED_RUNTIME_METHODS='[\"FS\", \"IDBFS\"]'")
-    if(EMSCRIPTEN_PRELOAD)
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ${EMSCRIPTEN_PRELOAD}")
-    endif()
-endif()
+# SmashBrotatoes is an SSB64-only Windows fork of Torch. Support for the other
+# games (SM64/MK64/SF64/PM64/F-Zero X/Mario Artist/NAudio) and the Emscripten/web
+# target has been removed; SSB64 support is enabled by the parent build via
+# -DBUILD_SSB64=ON.
 
 ################################################################################
 # Set target arch type if empty. Visual studio solution generator provides it.
@@ -71,48 +59,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 file(GLOB_RECURSE CXX_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/lib/strhash64/*.cpp)
 file(GLOB C_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c ${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.c ${CMAKE_CURRENT_SOURCE_DIR}/lib/libmio0/*.c ${CMAKE_CURRENT_SOURCE_DIR}/lib/libyay0/*.c ${CMAKE_CURRENT_SOURCE_DIR}/lib/libvpk0/*.c)
 set(SRC_DIR ${CXX_FILES} ${C_FILES} ${LGFXD_FILES})
-
-if(BUILD_SM64)
-    add_definitions(-DSM64_SUPPORT)
-else()
-    list(FILTER SRC_DIR EXCLUDE REGEX "${CMAKE_CURRENT_SOURCE_DIR}/src/factories/sm64/*")
-endif()
-
-if(BUILD_SF64)
-    add_definitions(-DSF64_SUPPORT)
-else()
-    list(FILTER SRC_DIR EXCLUDE REGEX "${CMAKE_CURRENT_SOURCE_DIR}/src/factories/sf64/*")
-endif()
-
-if(BUILD_MK64)
-    add_definitions(-DMK64_SUPPORT)
-else()
-    list(FILTER SRC_DIR EXCLUDE REGEX "${CMAKE_CURRENT_SOURCE_DIR}/src/factories/mk64/*")
-endif()
-
-if(BUILD_PM64)
-    add_definitions(-DPM64_SUPPORT)
-else()
-    list(FILTER SRC_DIR EXCLUDE REGEX "${CMAKE_CURRENT_SOURCE_DIR}/src/factories/pm64/*")
-endif()
-
-if(BUILD_FZERO)
-    add_definitions(-DFZERO_SUPPORT)
-else()
-    list(FILTER SRC_DIR EXCLUDE REGEX "${CMAKE_CURRENT_SOURCE_DIR}/src/factories/fzerox/*")
-endif()
-
-if(BUILD_MARIO_ARTIST)
-    add_definitions(-DMARIO_ARTIST_SUPPORT)
-else()
-    list(FILTER SRC_DIR EXCLUDE REGEX "${CMAKE_CURRENT_SOURCE_DIR}/src/factories/mario_artist/*")
-endif()
-
-if(BUILD_NAUDIO)
-    add_definitions(-DNAUDIO_SUPPORT)
-else()
-    list(FILTER SRC_DIR EXCLUDE REGEX "${CMAKE_CURRENT_SOURCE_DIR}/src/factories/naudio/*")
-endif()
 
 if(BUILD_SSB64)
     add_definitions(-DSSB64_SUPPORT)
