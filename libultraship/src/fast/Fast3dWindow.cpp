@@ -8,7 +8,9 @@
 #include "fast/backends/gfx_sdl.h"
 #include "fast/backends/gfx_dxgi.h"
 #include "fast/backends/gfx_opengl.h"
+#ifdef __APPLE__
 #include "fast/backends/gfx_metal.h"
+#endif
 #include "fast/backends/gfx_direct3d_common.h"
 #include "fast/backends/gfx_direct3d11.h"
 #include "fast/backends/gfx_window_manager_api.h"
