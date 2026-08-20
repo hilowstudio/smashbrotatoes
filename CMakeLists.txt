@@ -108,7 +108,6 @@ set(GBI_UCODE "F3DEX_GBI_2" CACHE STRING "" FORCE)
 # Build Torch as the standalone sidecar executable — a host tool run at our
 # build time (via ExternalProject below) to extract the user's ROM assets.
 set(USE_STANDALONE ON CACHE BOOL "" FORCE)
-set(BUILD_STORMLIB OFF CACHE BOOL "" FORCE)
 set(BUILD_SSB64 ON CACHE BOOL "" FORCE)
 
 ################################################################################
@@ -154,7 +153,6 @@ ExternalProject_Add(TorchExternal
     CMAKE_ARGS
         -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/torch-install
         -DUSE_STANDALONE=ON
-        -DBUILD_STORMLIB=OFF
         -DBUILD_SSB64=ON
 )
 

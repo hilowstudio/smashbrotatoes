@@ -9,7 +9,6 @@ set(CMAKE_C_STANDARD 11)
 
 # Set build options
 option(USE_STANDALONE "Build as a standalone executable" ON)
-option(BUILD_STORMLIB "Build with StormLib support" OFF)
 option(ENABLE_ASAN "Enable AddressSanitizer" OFF)
 
 # SmashBrotatoes is an SSB64-only Windows fork of Torch. Support for the other
@@ -81,10 +80,6 @@ else()
 	set(LINK_TYPE "MT")
 endif()
 
-if (BUILD_STORMLIB)
-    add_definitions(-DUSE_STORMLIB)
-endif()
-
 if(NOT MSVC)
     set(CMAKE_CXX_FLAGS_DEBUG "-g")
     set(CMAKE_CXX_FLAGS_RELEASE "-O3")
@@ -126,7 +121,6 @@ else()
         target_compile_options(${PROJECT_NAME} PRIVATE /bigobj)
         target_link_options(${PROJECT_NAME} PRIVATE /bigobj)
     endif()
-    add_definitions(-DSTORMLIB_NO_AUTO_LINK)
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
@@ -151,28 +145,6 @@ add_dependencies(${PROJECT_NAME} BinaryTools)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/lib/n64graphics)
 add_dependencies(${PROJECT_NAME} N64Graphics)
-
-# Link StormLib
-if (BUILD_STORMLIB)
-    set(STORM_BUILD_TESTS OFF)
-    set(STORMLIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib/StormLib)
-    add_subdirectory(${STORMLIB_DIR})
-    if(USE_STANDALONE)
-        if((CMAKE_SYSTEM_NAME MATCHES "Windows") AND ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang"))
-            include(../cmake/HandleCompilerRT.cmake)
-            find_compiler_rt_library(builtins CLANG_RT_BUILTINS_LIBRARY)
-            get_filename_component(LIBDIR "${CLANG_RT_BUILTINS_LIBRARY}" DIRECTORY)
-            if(USE_STANDALONE AND IS_DIRECTORY "${LIBDIR}")
-                target_link_libraries(storm ${CLANG_RT_BUILTINS_LIBRARY})
-            endif()
-        else()
-            target_link_libraries(${PROJECT_NAME} PRIVATE storm)
-        endif()
-        if (CMAKE_SYSTEM_NAME STREQUAL "NintendoSwitch")
-            target_compile_definitions(storm PRIVATE -D_POSIX_C_SOURCE=200809L)
-        endif()
-    endif ()
-endif()
 
 # Link YamlCpp
 
