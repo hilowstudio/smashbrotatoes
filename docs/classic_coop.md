@@ -97,7 +97,7 @@ Direct-boot a co-op run without touching the CSS:
 
 ```bash
 SSB64_START_SCENE=52 SSB64_SPGAME_STAGE=<0-13> SSB64_SPGAME_FKIND=<p1 fkind> \
-SSB64_COOP_P2=<port 1-3> SSB64_COOP_P2_FKIND=<p2 fkind> ./BattleShip
+SSB64_COOP_P2=<port 1-3> SSB64_COOP_P2_FKIND=<p2 fkind> ./SmashBrotatoes
 ```
 
 (`SSB64_SPGAME_FKIND` is required on direct boots — without it the intro

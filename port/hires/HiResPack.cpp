@@ -429,7 +429,7 @@ bool HiResPack::Init() {
     }
     gOpenZips.clear();
 
-    // Resolve <app-data>/mods alongside BattleShip.o2r and ssb64_save.bin.
+    // Resolve <app-data>/mods alongside SmashBrotatoes.o2r and ssb64_save.bin.
     // Same convention as port_save.cpp.
     try {
         gModsRoot = Ship::Context::GetPathRelativeToAppDirectory("mods");

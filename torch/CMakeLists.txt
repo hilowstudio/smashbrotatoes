@@ -49,8 +49,7 @@ if(USE_STANDALONE)
     # Because libgfxd is not a CMake project, we have to manually fetch it and add it to the build
     FetchContent_Declare(
         libgfxd
-        GIT_REPOSITORY https://github.com/glankk/libgfxd.git
-        GIT_TAG 96fd3b849f38b3a7c7b7f3ff03c5921d328e6cdf
+        SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/libgfxd
     )
 
     FetchContent_GetProperties(libgfxd)
@@ -191,8 +190,7 @@ endif()
 if(NOT USE_STANDALONE AND EXISTS "/mnt/c/WINDOWS/system32/wsl.exe")
     FetchContent_Declare(
         GSL
-        GIT_REPOSITORY https://github.com/Microsoft/GSL.git
-        GIT_TAG a3534567187d2edc428efd3f13466ff75fe5805c
+        SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/GSL
     )
     FetchContent_MakeAvailable(GSL)
     target_link_libraries(${PROJECT_NAME} PRIVATE GSL)
@@ -237,8 +235,7 @@ set(YAML_CPP_BUILD_TESTS OFF)
 set(YAML_CPP_DISABLE_UNINSTALL ON)
 FetchContent_Declare(
     yaml-cpp
-    GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git
-    GIT_TAG 2f86d13775d119edbb69af52e5f566fd65c6953b
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/yaml-cpp
 )
 set(YAML_CPP_BUILD_TESTS OFF)
 FetchContent_MakeAvailable(yaml-cpp)
@@ -256,8 +253,7 @@ if(USE_STANDALONE)
 
 	FetchContent_Declare(
 		spdlog
-		GIT_REPOSITORY https://github.com/gabime/spdlog.git
-		GIT_TAG 79524ddd08a4ec981b7fea76afd08ee05f83755d
+        SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/spdlog
 	)
 
 	FetchContent_MakeAvailable(spdlog)
@@ -267,8 +263,7 @@ else()
     if(NOT spdlog_FOUND)
         FetchContent_Declare(
             spdlog
-            GIT_REPOSITORY https://github.com/gabime/spdlog.git
-            GIT_TAG 79524ddd08a4ec981b7fea76afd08ee05f83755d
+        SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/spdlog
         )
 
         FetchContent_MakeAvailable(spdlog)
@@ -280,8 +275,7 @@ endif()
 set(tinyxml2_BUILD_TESTING OFF)
 FetchContent_Declare(
     tinyxml2
-    GIT_REPOSITORY https://github.com/leethomason/tinyxml2.git
-    GIT_TAG 10.0.0
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/tinyxml2
     OVERRIDE_FIND_PACKAGE
 )
 FetchContent_MakeAvailable(tinyxml2)

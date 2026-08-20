@@ -103,7 +103,7 @@ namespace ssb64 {
             discordPresence.state = gameState;
             discordPresence.details = matchDetails;
             discordPresence.startTimestamp = g_startTime;
-            discordPresence.largeImageKey = "battleship_logo";
+            discordPresence.largeImageKey = "smashbrotatoes_logo";
             discordPresence.largeImageText = "Unofficial Smash 64 PC Port";
 
             Discord_UpdatePresence(&discordPresence);

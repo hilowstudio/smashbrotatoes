@@ -326,11 +326,11 @@ static std::shared_ptr<RelocFile> portLoadRelocResource(u32 file_id)
 
 	if (!resource)
 	{
-		/* Catch the "stale BattleShip.o2r" failure mode visibly before the
+		/* Catch the "stale SmashBrotatoes.o2r" failure mode visibly before the
 		 * caller dereferences this NULL and SIGSEGVs deep in portFixupSprite.
 		 *
 		 * When a user upgrades the port across an asset-format bump (e.g.
-		 * factory version 0 vs 3), their cached BattleShip.o2r is silently
+		 * factory version 0 vs 3), their cached SmashBrotatoes.o2r is silently
 		 * incompatible: every RELO resource fails to load with "GetFactory
 		 * failed to find an import factory" deep inside libultraship, but
 		 * we only see NULL here. A healthy run loads thousands of reloc
@@ -343,16 +343,16 @@ static std::shared_ptr<RelocFile> portLoadRelocResource(u32 file_id)
 		{
 			sExitedOnStaleArchive = true;
 			std::string dataDirO2r =
-			    Ship::Context::GetPathRelativeToAppDirectory("BattleShip.o2r");
+			    Ship::Context::GetPathRelativeToAppDirectory("SmashBrotatoes.o2r");
 			fprintf(stderr,
 			    "\n"
 			    "============================================================\n"
-			    "SSB64 PC port: failed to load asset from BattleShip.o2r\n"
+			    "SSB64 PC port: failed to load asset from SmashBrotatoes.o2r\n"
 			    "  resource: %s\n"
 			    "  file_id:  %u\n"
 			    "============================================================\n"
 			    "\n"
-			    "This almost always means your cached BattleShip.o2r was\n"
+			    "This almost always means your cached SmashBrotatoes.o2r was\n"
 			    "packed by an older build whose resource format doesn't\n"
 			    "match this binary's registered factory version.\n"
 			    "\n"
@@ -367,7 +367,7 @@ static std::shared_ptr<RelocFile> portLoadRelocResource(u32 file_id)
 			    "============================================================\n"
 			    "\n",
 			    path.c_str(), file_id, dataDirO2r.c_str());
-			port_log("SSB64: STALE BattleShip.o2r detected — first reloc load failed "
+			port_log("SSB64: STALE SmashBrotatoes.o2r detected — first reloc load failed "
 			         "(path=%s file_id=%u). Delete '%s' and re-launch to re-extract.\n",
 			         path.c_str(), file_id, dataDirO2r.c_str());
 			std::fflush(stderr);
@@ -496,7 +496,7 @@ void lbRelocAddForceStatusBufferFile(u32 id, void *addr)
  * Exposed for mod-loader use: a mod that ships its own reloc-format
  * file bytes (e.g., new-character assets bundled inside a TCC mod)
  * calls this directly instead of routing through portLoadRelocResource,
- * which only sees files inside BattleShip.o2r. Mod file_ids may sit
+ * which only sees files inside SmashBrotatoes.o2r. Mod file_ids may sit
  * outside the vanilla 0..RELOC_FILE_COUNT-1 range; we gate operations
  * that need a valid gRelocFileTable[] entry on the usual bounds check.
  *
@@ -963,8 +963,8 @@ extern "C" void portRelocLoadFileFromBytesPrivate(
  * Load a file from the .o2r archive, copy into ram_dst, and perform
  * token-based internal + external pointer relocation. Thin wrapper
  * around portRelocLoadFileFromBytes that sources its bytes via the
- * libultraship ResourceManager (i.e., the BattleShip.o2r /
- * BattleShip.fromsource.o2r pipeline).
+ * libultraship ResourceManager (i.e., the SmashBrotatoes.o2r /
+ * SmashBrotatoes.fromsource.o2r pipeline).
  */
 void lbRelocLoadAndRelocFile(u32 file_id, void *ram_dst, u32 bytes_num, s32 loc)
 {

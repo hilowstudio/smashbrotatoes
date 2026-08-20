@@ -1,5 +1,5 @@
 /*
- * Events.h — Convenience aggregator for BattleShip-specific engine events.
+ * Events.h — Convenience aggregator for SmashBrotatoes-specific engine events.
  *
  * Engine-side: include this then CALL_EVENT(GamePostUpdateEvent) at the
  * appropriate firing point. Mod-side: include this then REGISTER_LISTENER

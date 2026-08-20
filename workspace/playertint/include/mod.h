@@ -1,8 +1,8 @@
 /*
- * mod.h — BattleShip native C-mod author API.
+ * mod.h — SmashBrotatoes native C-mod author API.
  *
  * #include this from your mod's .c source. The TCC scripting layer
- * compiles your source at runtime, links against BattleShip.def
+ * compiles your source at runtime, links against SmashBrotatoes.def
  * (auto-generated from the engine binary's export table), and calls
  * your ModInit / ModExit entry points.
  *
@@ -58,7 +58,7 @@ extern void* ScriptGetFunction(const char* module, const char* function);
 /* Logging from inside a mod.
  *
  * mod_log(fmt, ...) routes through the engine's port_log, which writes
- * to %APPDATA%/BattleShip/ssb64.log. Output appears immediately
+ * to %APPDATA%/SmashBrotatoes/ssb64.log. Output appears immediately
  * (port_log fflushes after every write). Format string is printf-style.
  *
  * In Debug builds on Windows, libultraship allocates a console at

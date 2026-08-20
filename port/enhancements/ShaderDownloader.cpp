@@ -310,8 +310,8 @@ bool ReferencesUnsupportedHistoryBinding(const std::string& source) {
 //     argument.
 //   * `Ship::Context::GetPathRelativeToAppDirectory("shaders")`
 //     resolves per-OS via LUS (macOS `~/Library/Application
-//     Support/BattleShip`, Linux `~/.local/share/BattleShip`,
-//     Windows `%APPDATA%\BattleShip`). Always under the user
+//     Support/SmashBrotatoes`, Linux `~/.local/share/SmashBrotatoes`,
+//     Windows `%APPDATA%\SmashBrotatoes`). Always under the user
 //     home, no admin/root needed.
 //
 // On a system where one of these binaries is missing, popen
@@ -632,7 +632,7 @@ void FetchShaderPackCatalogAsync() {
     std::thread([]() {
         SPDLOG_INFO("Shader pack: worker thread started");
         const std::filesystem::path tempDir = std::filesystem::temp_directory_path() /
-                                              "battleship-shader-pack";
+                                              "smashbrotatoes-shader-pack";
         const std::filesystem::path zipPath = tempDir / "glsl-shaders.zip";
         const std::filesystem::path extractDir = tempDir / "extract";
 

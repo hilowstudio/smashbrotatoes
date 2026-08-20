@@ -27,14 +27,14 @@ When you fix a new significant bug, add an entry under `docs/bugs/` using the sl
 When asked to inspect GitHub issues, prefer the GitHub connector. If issue tools
 are not visible yet, first run tool discovery for "GitHub issue fetch/view" so
 the connector exposes `_fetch_issue` and `_fetch_issue_comments`, then fetch with
-`repository_full_name: "JRickey/BattleShip"`.
+`repository_full_name: "hilowstudio/smashbrotatoes"`.
 
 The local GitHub CLI is also authenticated as `JRickey` and has admin access to
-`JRickey/BattleShip`. If the human-formatted `gh issue view` output is blank or
+`hilowstudio/smashbrotatoes`. If the human-formatted `gh issue view` output is blank or
 unreliable, use the JSON/template path instead:
 
 ```bash
-gh issue view <number> -R JRickey/BattleShip --json number,title,state,author,body,url,comments,labels
+gh issue view <number> -R hilowstudio/smashbrotatoes --json number,title,state,author,body,url,comments,labels
 ```
 
 Known-good check from 2026-06-01: issue #209 and its comments were accessible
@@ -85,7 +85,7 @@ Stale worktrees under `.claude/worktrees/` from past sessions are fine to remove
 
 - **Never use relative `build` paths in tool calls** — Claude Code resets cwd between shell calls. `cmake --build build` from the project root builds the main tree, not the worktree. Always use absolute paths: `cmake --build <worktree>/build ...`.
 - **Cap build parallelism to your core/RAM budget.** Passing bare `--parallel`/`-j` lets the build spawn one compiler per logical core; libultraship's Debug C++ TUs hold 1–2 GB resident each, so a machine with limited RAM can be pushed into swap and pin the fans for the whole compile. Pick an explicit worker count that fits your hardware, e.g. `cmake --build <worktree>/build --target ssb64 -j 4`, and raise it only when you know nothing else heavy is open. Worktree first-builds are full from-scratch (no shared cache with main tree), so this matters most the first time.
-- The binary loads `BattleShip.o2r` (ROM-derived, user-extracted) and `f3d.o2r` (shaders) from its CWD at launch; without them it exits with `archive ... does not exist`. `new-worktree.ps1` links both from the main tree's `build/` into the worktree's `build/`. If the main tree has never been extracted, run `cmake --build <main-tree>/build --target ExtractAssets` there first so the symlinks resolve. (`ssb64.o2r` was an early-development port-asset archive; it is no longer produced or loaded — the build never contains ROM-derived data beyond the user's own first-run `BattleShip.o2r`.)
+- The binary loads `SmashBrotatoes.o2r` (ROM-derived, user-extracted) and `f3d.o2r` (shaders) from its CWD at launch; without them it exits with `archive ... does not exist`. `new-worktree.ps1` links both from the main tree's `build/` into the worktree's `build/`. If the main tree has never been extracted, run `cmake --build <main-tree>/build --target ExtractAssets` there first so the symlinks resolve. (`ssb64.o2r` was an early-development port-asset archive; it is no longer produced or loaded — the build never contains ROM-derived data beyond the user's own first-run `SmashBrotatoes.o2r`.)
 
 ---
 

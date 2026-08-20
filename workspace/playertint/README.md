@@ -1,6 +1,6 @@
 # Player Tint — Fighter event example mod
 
-A small, complete BattleShip mod that gives each player a distinct fighter
+A small, complete SmashBrotatoes mod that gives each player a distinct fighter
 color: **P1 red, P2 blue, P3 green, P4 yellow**. Useful for telling players
 apart, and a worked example of the **Fighter query/override event** system
 documented in [`docs/modding.md`](../../docs/modding.md).
@@ -35,7 +35,7 @@ cmake --build build
 ```
 
 `output/` now holds the packaged mod. Drop the folder into
-`<BattleShip-install>/mods/` for development, or pack it as `.o2r` for
+`<SmashBrotatoes-install>/mods/` for development, or pack it as `.o2r` for
 distribution:
 
 ```bash

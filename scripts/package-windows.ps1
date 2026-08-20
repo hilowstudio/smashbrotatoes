@@ -1,10 +1,10 @@
-# Builds BattleShip as a self-contained Windows release zip.
+# Builds SmashBrotatoes as a self-contained Windows release zip.
 #
-# Output: <repo-root>\dist\BattleShip-windows.zip
+# Output: <repo-root>\dist\SmashBrotatoes-windows.zip
 #
 # Layout produced (extracted):
-#   BattleShip\
-#     BattleShip.exe             — main executable
+#   SmashBrotatoes\
+#     SmashBrotatoes.exe             — main executable
 #     torch.exe                  — sidecar for first-run extraction
 #     f3d.o2r                    — Fast3D shader archive (ROM-independent)
 #     config.yml                 — Torch extraction config
@@ -14,21 +14,21 @@
 #     <other vcpkg DLLs>         — picked up by Get-ChildItem from build dir
 #
 # The default US Windows package includes TCC scripting support. It statically
-# links libtcc into BattleShip.exe and stages only TinyCC headers plus libtcc1.a
+# links libtcc into SmashBrotatoes.exe and stages only TinyCC headers plus libtcc1.a
 # under .tcc, avoiding the tcc.dll false-positive signature while ScriptLoader
 # relocates mod code in memory.
 #
-# Portable: drop the extracted folder anywhere and run BattleShip.exe.
-# Save data and config (ssb64_save.bin, BattleShip.cfg.json, logs/) land
+# Portable: drop the extracted folder anywhere and run SmashBrotatoes.exe.
+# Save data and config (ssb64_save.bin, SmashBrotatoes.cfg.json, logs/) land
 # next to the .exe in the extraction directory — move the folder, the
-# saves move with it. BattleShip.o2r is NOT bundled; the first-run wizard
-# extracts it from the user's ROM into the same directory as BattleShip.exe.
+# saves move with it. SmashBrotatoes.o2r is NOT bundled; the first-run wizard
+# extracts it from the user's ROM into the same directory as SmashBrotatoes.exe.
 #
 # We intentionally do NOT pass -DNON_PORTABLE=ON. NON_PORTABLE bakes
 # CMAKE_INSTALL_PREFIX into libultraship's install_config.h at configure
 # time, and CMake resolves any relative prefix against the configure cwd —
 # so on the GitHub Actions runner that bakes the runner workspace path
-# (e.g. "D:/a/BattleShip/BattleShip/BattleShip"), which v0.7.2 shipped
+# (e.g. "D:/a/SmashBrotatoes/SmashBrotatoes/SmashBrotatoes"), which v0.7.2 shipped
 # and which crashed user machines whose D: drive returned ERROR_NOT_READY
 # when libultraship probed it. Building portable side-steps the entire
 # class of bug: the runtime resolves resource paths via GetModuleFileNameW
@@ -42,7 +42,7 @@ $Root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 # application — own .exe name, zip, app-data dir — so a user can keep
 # both and they never touch each other's ROM/o2r/saves. $AppName
 # mirrors CMake SSB64_APP_NAME / OUTPUT_NAME. US keeps the historical
-# "BattleShip" identity so existing links / the in-app updater are
+# "SmashBrotatoes" identity so existing links / the in-app updater are
 # unaffected.
 $Ver = if ($env:SSB64_VERSION) { $env:SSB64_VERSION } else { "us" }
 if ($Ver -ne "us" -and $Ver -ne "jp") { Write-Error "SSB64_VERSION must be us|jp"; exit 1 }
@@ -60,7 +60,7 @@ $PackageFlavor = if ($EnableScripting) { "scripting" } else { "standard" }
 $ZipSuffix = "-windows"
 $BuildDir = Join-Path $Root "build-bundle-win-$Ver-$PackageFlavor"
 $DistDir = Join-Path $Root "dist"
-$AppName = if ($Ver -eq "jp") { "BattleShip-JP" } else { "BattleShip" }
+$AppName = if ($Ver -eq "jp") { "SmashBrotatoes-JP" } else { "SmashBrotatoes" }
 $StageName = $AppName
 $StageDir = Join-Path $DistDir $StageName
 $ZipPath = Join-Path $DistDir "$AppName$ZipSuffix.zip"
@@ -91,7 +91,7 @@ Write-Step "Configuring release build (portable, scripting=$EnableScripting)"
 # No NON_PORTABLE, no CMAKE_INSTALL_PREFIX. LUS resolves the bundle path
 # via GetModuleFileNameW at runtime, and the port's port_save.cpp +
 # Ship::Context::GetAppDirectoryPath() route saves/config to the cwd
-# (= BattleShip.exe's directory when launched normally). See the file
+# (= SmashBrotatoes.exe's directory when launched normally). See the file
 # header for the v0.7.2 crash this avoids.
 #
 # Pin Python3_EXECUTABLE to the same `python` the workflow's
@@ -110,7 +110,7 @@ cmake -B $BuildDir $Root `
     | Out-Null
 if ($LASTEXITCODE -ne 0) { Fail "cmake configure failed" }
 
-Write-Step "Building BattleShip + torch"
+Write-Step "Building SmashBrotatoes + torch"
 cmake --build $BuildDir --config Release -j $Jobs
 if ($LASTEXITCODE -ne 0) { Fail "build failed" }
 
@@ -126,7 +126,7 @@ if (-not (Test-Path $F3DO2R)) { Fail "f3d.o2r was not created" }
 
 # ── 3. Locate built artifacts ──
 # CMake OUTPUT_NAME == SSB64_APP_NAME == $AppName, so the exe is
-# BattleShip.exe (US) or BattleShip-JP.exe (JP).
+# SmashBrotatoes.exe (US) or SmashBrotatoes-JP.exe (JP).
 $GameExe = Join-Path $BuildDir "Release\$AppName.exe"
 if (-not (Test-Path $GameExe)) {
     # Fall back to non-multi-config layout (Ninja).
@@ -157,7 +157,7 @@ Copy-Item (Join-Path $Root "gamecontrollerdb.txt") $StageDir
 Copy-Item (Join-Path $Root "config.yml") $StageDir
 Copy-Item (Join-Path $Root "yamls\$Ver\*.yml") (Join-Path $StageDir "yamls\$Ver")
 # Standalone .ico for shortcut/installer use — the icon is also embedded
-# directly in BattleShip.exe via port/ssb64.rc, so Explorer picks it up
+# directly in SmashBrotatoes.exe via port/ssb64.rc, so Explorer picks it up
 # without this file. Keep it bundled for future installer work.
 # Region-aware: JP picks assets\icon-jp.ico, US keeps assets\icon.ico.
 # (Note: ssb64.rc still embeds assets\icon.ico unconditionally, so the
@@ -197,7 +197,7 @@ Copy-Item $LusLicense   (Join-Path $LicensesDir "libultraship-LICENSE.txt")
 Copy-Item $TorchLicense (Join-Path $LicensesDir "torch-LICENSE.txt")
 @'
 This directory contains license texts for third-party components whose
-compiled code is included in this BattleShip distribution:
+compiled code is included in this SmashBrotatoes distribution:
 
   - libultraship-LICENSE.txt  (MIT, Copyright (c) 2022 kenix3)
   - torch-LICENSE.txt         (MIT, Copyright (c) 2023 Lywx)
@@ -205,7 +205,7 @@ compiled code is included in this BattleShip distribution:
 Bundled font licenses (SIL Open Font License 1.1) live alongside the
 font files at assets\custom\fonts\.
 
-The BattleShip project's own MIT license is in ..\LICENSE.txt.
+The SmashBrotatoes project's own MIT license is in ..\LICENSE.txt.
 
 Additional libraries dynamically linked at runtime (SDL2, GLEW, libzip,
 nlohmann_json, tinyxml2, spdlog, fmt, hidapi-via-libultraship) are
@@ -214,7 +214,7 @@ BSD, BSD-3-Clause, MIT). Refer to those upstream packages for full
 license texts.
 '@ | Set-Content -Path (Join-Path $LicensesDir "README.txt") -Encoding UTF8
 
-# Bundle DLLs that landed next to BattleShip.exe (vcpkg drops SDL2.dll, etc.).
+# Bundle DLLs that landed next to SmashBrotatoes.exe (vcpkg drops SDL2.dll, etc.).
 $ExeBuildDir = Split-Path $GameExe -Parent
 Get-ChildItem -Path $ExeBuildDir -Filter "*.dll" | ForEach-Object {
     Copy-Item $_.FullName $StageDir
@@ -241,7 +241,7 @@ if (-not (Test-Path $ZipPath)) { Fail "zip was not created" }
 
 $ZipKB = [int]((Get-Item $ZipPath).Length / 1024)
 Write-Host "`n✓ Release zip ready: $ZipPath ($ZipKB KB)" -ForegroundColor Green
-Write-Host "   Portable: extract anywhere; save data lives next to BattleShip.exe."
+Write-Host "   Portable: extract anywhere; save data lives next to SmashBrotatoes.exe."
 if ($EnableScripting) {
     Write-Host "   Includes TCC scripting support for C mods."
 } else {

@@ -389,7 +389,7 @@ if(NOT TARGET libtcc)
         "${tinycc_SOURCE_DIR}/lib/libtcc1.c"
     )
     # Standalone tcc.exe — the CLI driver. Used post-build by the outer
-    # project to run `tcc.exe -impdef BattleShip.exe -o BattleShip.def`,
+    # project to run `tcc.exe -impdef SmashBrotatoes.exe -o SmashBrotatoes.def`,
     # producing the export-name list that memory-mode mod source resolves
     # against the running process.
     # tcc.c #includes libtcc.c via ONE_SOURCE so we don't link against

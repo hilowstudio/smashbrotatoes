@@ -83,7 +83,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--repo",
-        default=os.environ.get("GITHUB_REPOSITORY", "JRickey/BattleShip"),
+        default=os.environ.get("GITHUB_REPOSITORY", "hilowstudio/smashbrotatoes"),
         help="GitHub repository in owner/name form",
     )
     parser.add_argument(
@@ -111,7 +111,7 @@ def parse_link_header(header: str) -> dict[str, str]:
 def api_request(url: str, accept: str) -> tuple[object, str]:
     request = urllib.request.Request(url)
     request.add_header("Accept", accept)
-    request.add_header("User-Agent", "battleship-readme-stats")
+    request.add_header("User-Agent", "smashbrotatoes-readme-stats")
     request.add_header("X-GitHub-Api-Version", "2022-11-28")
     token = github_token()
     if token:

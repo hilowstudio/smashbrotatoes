@@ -1,8 +1,8 @@
-# BattleShip TCC Mod Template
+# SmashBrotatoes TCC Mod Template
 
-Starter scaffold for native C mods loaded by BattleShip's runtime TCC scripting layer (ported from Starship / Kenix3 libultraship).
+Starter scaffold for native C mods loaded by SmashBrotatoes's runtime TCC scripting layer (ported from Starship / Kenix3 libultraship).
 
-Your mod ships as a `.o2r` archive that wraps the same folder layout described below. The engine compiles each `.c` file at runtime via libtcc, links against `BattleShip.def` (auto-generated from the engine binary's export table), and calls `ModInit` on load / `ModExit` on unload.
+Your mod ships as a `.o2r` archive that wraps the same folder layout described below. The engine compiles each `.c` file at runtime via libtcc, links against `SmashBrotatoes.def` (auto-generated from the engine binary's export table), and calls `ModInit` on load / `ModExit` on unload.
 
 The runtime loader (`port/port.cpp:MountModsDir`) handles `.o2r` archives and folder layouts identically through libultraship's `ArchiveManager`, so during development you can drop the unpacked `output/` folder straight into `<install>/mods/` for fast iteration. For distribution, pack it as an `.o2r`.
 
@@ -18,7 +18,7 @@ template/
 ├── src/
 │   └── demo.c            # Mod logic + event listeners
 ├── assets/               # Textures, audio, etc. (copied verbatim into output/)
-└── output/               # Generated. Drop the folder into BattleShip/mods/.
+└── output/               # Generated. Drop the folder into SmashBrotatoes/mods/.
     ├── manifest.json
     ├── preview.png       # Copied from the source folder if present.
     ├── build.gen
@@ -34,7 +34,7 @@ cmake -B build
 cmake --build build
 ```
 
-`output/` now contains the packaged mod. Drop it into `<BattleShip-install>/mods/`. The engine reads `manifest.json`, follows `main: build.gen`, compiles each listed `dist/*.c`, and calls `ModInit`.
+`output/` now contains the packaged mod. Drop it into `<SmashBrotatoes-install>/mods/`. The engine reads `manifest.json`, follows `main: build.gen`, compiles each listed `dist/*.c`, and calls `ModInit`.
 
 For distribution, pack it as `.o2r`. When the template is built inside the engine tree, the engine's `cmake/ModO2R.cmake` module wires up an opt-in target:
 
@@ -42,7 +42,7 @@ For distribution, pack it as `.o2r`. When the template is built inside the engin
 cmake --build build --target mod_template_o2r
 ```
 
-That runs `torch.exe pack output/ template.o2r o2r` and drops the archive next to `output/`. Drop the `.o2r` into `<BattleShip-install>/mods/` and the runtime loads it the same way it loads the folder.
+That runs `torch.exe pack output/ template.o2r o2r` and drops the archive next to `output/`. Drop the `.o2r` into `<SmashBrotatoes-install>/mods/` and the runtime loads it the same way it loads the folder.
 
 Outside the engine tree (standalone builds with no `torch.exe` on PATH), pack manually:
 
@@ -76,7 +76,7 @@ Available events live in `port/hooks/list/EngineEvent.h` (and any other `list/*.
 
 ## Calling engine functions
 
-Any function in BattleShip's export table is callable from your mod. The post-build step runs `tcc.exe -impdef <BattleShip.exe>` and produces `BattleShip.def`, which libtcc automatically links against. You don't have to declare engine functions — `#include` the relevant decomp / port header and call them.
+Any function in SmashBrotatoes's export table is callable from your mod. The post-build step runs `tcc.exe -impdef <SmashBrotatoes.exe>` and produces `SmashBrotatoes.def`, which libtcc automatically links against. You don't have to declare engine functions — `#include` the relevant decomp / port header and call them.
 
 ## Cross-mod calls
 
@@ -125,7 +125,7 @@ Hooks are owned by the mod that installed them. When the mod is unloaded (engine
 
 ## Resolving engine symbols at runtime
 
-Most engine calls work via `#include` + a normal call (the linker resolves them through `BattleShip.def`). For cases where you need the address of a function as data (passing a callback to vanilla code, building a function table), use:
+Most engine calls work via `#include` + a normal call (the linker resolves them through `SmashBrotatoes.def`). For cases where you need the address of a function as data (passing a callback to vanilla code, building a function table), use:
 
 ```c
 extern void *mod_resolve_symbol(const char *name);
@@ -135,7 +135,7 @@ void *fn = mod_resolve_symbol("itManagerMakeItem");
 
 ## Logging
 
-`mod_log(fmt, ...)` routes through `port_log` and writes to `%APPDATA%/BattleShip/ssb64.log` immediately (no buffering). Format string is printf-style.
+`mod_log(fmt, ...)` routes through `port_log` and writes to `%APPDATA%/SmashBrotatoes/ssb64.log` immediately (no buffering). Format string is printf-style.
 
 In Debug builds on Windows, libultraship allocates a console at startup and redirects `stdout` / `stderr` to it, so `printf` and `fprintf(stderr, ...)` from a mod show up in that second window too. In Release builds there's no console, so stdout goes nowhere - `mod_log` is the only thing you can rely on across both configurations.
 

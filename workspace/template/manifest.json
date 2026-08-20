@@ -3,7 +3,7 @@
     "main": "build.gen",
     "version": "1.0.0",
     "website": "https://example.com",
-    "description": "A simple demo mod for testing the BattleShip TCC scripting layer.",
+    "description": "A simple demo mod for testing the SmashBrotatoes TCC scripting layer.",
     "author": "Your Name",
     "license": "MIT",
     "code-version": 1

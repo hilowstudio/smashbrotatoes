@@ -1,6 +1,6 @@
-# Modding BattleShip
+# Modding SmashBrotatoes
 
-BattleShip ships a native **C mod** system: at boot the engine compiles each
+SmashBrotatoes ships a native **C mod** system: at boot the engine compiles each
 mod's `.c` source at runtime (via libtcc), links it against the engine's own
 export table, and calls the mod's `ModInit`. Mods can subscribe to engine
 events, detour any exported engine function, and play custom audio — without
@@ -212,7 +212,7 @@ MOD_EXIT() {
   layout of many decomp structs (pointer fields collapse to `u32` reloc tokens).
   `mod.h` defines `PORT 1` before anything else for you — keep that include
   first, or cross-boundary struct reads return garbage.
-- **Logging.** `mod_log(fmt, ...)` writes to `%APPDATA%/BattleShip/ssb64.log`
+- **Logging.** `mod_log(fmt, ...)` writes to `%APPDATA%/SmashBrotatoes/ssb64.log`
   (unbuffered) and works in both Debug and Release. `printf`/`stderr` only
   surface in the Debug-build console on Windows; in Release they go nowhere.
   Rely on `mod_log`.

@@ -17,7 +17,7 @@ class SymbolResolver
 {
 public:
     /* Initialize debug-info access. On Windows this calls SymInitialize
-     * with the host process and loads the BattleShip.pdb sitting next
+     * with the host process and loads the SmashBrotatoes.pdb sitting next
      * to the executable. Safe to call multiple times.
      *
      * Returns true on success, false if debug info is unavailable

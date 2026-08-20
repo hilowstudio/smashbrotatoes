@@ -1,4 +1,4 @@
-# BattleShip "Player Tint" example mod — packaging-only build.
+# SmashBrotatoes "Player Tint" example mod — packaging-only build.
 #
 # Identical in shape to workspace/template/CMakeLists.txt: it does NOT
 # compile the mod (libtcc does that at runtime inside the engine). It only
@@ -7,7 +7,7 @@
 # drop the output/ folder into <install>/mods/ (or pack it as .o2r).
 
 cmake_minimum_required(VERSION 3.10)
-project(BattleShipModPlayerTint)
+project(SmashBrotatoesModPlayerTint)
 
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 

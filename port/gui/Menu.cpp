@@ -868,7 +868,7 @@ void Menu::DrawElement() {
     UIWidgets::ButtonOptions options3 = {};
     options3.color = UIWidgets::Colors::Red;
     options3.size = UIWidgets::Sizes::Inline;
-    options3.tooltip = "Quit BattleShip";
+    options3.tooltip = "Quit SmashBrotatoes";
     if (UIWidgets::Button(ICON_FA_POWER_OFF, options3)) {
         std::shared_ptr<Menu> menu =
             std::static_pointer_cast<Menu>(Ship::Context::GetInstance()->GetWindow()->GetGui()->GetMenu());

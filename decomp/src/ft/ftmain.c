@@ -4607,7 +4607,7 @@ void ftMainSetStatus(GObj *fighter_gobj, s32 status_id, f32 frame_begin, f32 ani
      * SR's item-respawn loop. Both fire from the same change_action_ patch
      * site in SR but the port has no equivalent target to drive. They are
      * left unimplemented here because the SR systems they depend on are
-     * not present in the BattleShip port. */
+     * not present in the SmashBrotatoes port. */
 #endif
 
     status_struct = NULL;

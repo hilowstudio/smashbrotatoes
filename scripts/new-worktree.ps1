@@ -17,7 +17,7 @@
 #      so `git worktree add` already brings them along — no submodule clones.
 #   4. Regenerates gitignored codegen (reloc stubs, yamls, reloc table, credits).
 #   5. Runs `cmake -B build` (configure only; pass -Build to also compile).
-#   6. Copies extracted BattleShip.o2r / f3d.o2r from the main tree if present.
+#   6. Copies extracted SmashBrotatoes.o2r / f3d.o2r from the main tree if present.
 #
 # Parallel windows in separate worktrees never collide on source or build
 # outputs.
@@ -118,14 +118,14 @@ cmake -S $WtDir -B (Join-Path $WtDir 'build') -G $Gen -DCMAKE_BUILD_TYPE=$Config
 if ($LASTEXITCODE -ne 0) { Fail "cmake configure failed" }
 
 # ── 5b. Copy extracted assets ──
-# Torch extraction (BattleShip.o2r) is slow and produces bytewise-identical
-# output for a given baserom. The binary loads BattleShip.o2r (ROM-derived)
+# Torch extraction (SmashBrotatoes.o2r) is slow and produces bytewise-identical
+# output for a given baserom. The binary loads SmashBrotatoes.o2r (ROM-derived)
 # and f3d.o2r (shaders) from its CWD on launch — without them the game
 # prints "archive ... does not exist" and exits. Reuse the main tree's
 # extracted assets via copy so parallel worktrees don't each re-extract.
-Step "Copying extracted assets (BattleShip.o2r / f3d.o2r)"
+Step "Copying extracted assets (SmashBrotatoes.o2r / f3d.o2r)"
 $linkedAny = $false
-foreach ($asset in 'BattleShip.o2r', 'BattleShip-JP.o2r', 'f3d.o2r') {
+foreach ($asset in 'SmashBrotatoes.o2r', 'SmashBrotatoes-JP.o2r', 'f3d.o2r') {
     $src = $null
     foreach ($cand in (Join-Path $Root "build\$asset"), (Join-Path $Root $asset)) {
         if (Test-Path $cand) { $src = $cand; break }

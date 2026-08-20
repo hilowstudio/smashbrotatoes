@@ -12,10 +12,10 @@ name: Release
 # `release` job stitches the artifacts into a GitHub Release attached to the
 # tag.
 #
-# US keeps the historical artifact name (BattleShip-windows.zip) so existing
-# links and the in-app updater are unaffected; JP is BattleShip-JP-windows.zip.
+# US keeps the historical artifact name (SmashBrotatoes-windows.zip) so existing
+# links and the in-app updater are unaffected; JP is SmashBrotatoes-JP-windows.zip.
 #
-# The build is ROM-independent end-to-end: BattleShip.o2r is NEVER produced
+# The build is ROM-independent end-to-end: SmashBrotatoes.o2r is NEVER produced
 # by CI. Users extract it from their own ROM via the ImGui first-run
 # wizard at launch (the JP build bundles yamls/jp + the shared config.yml,
 # which routes by the user's ROM hash).
@@ -44,12 +44,12 @@ jobs:
         include:
           - version: us
             enable_scripting: "1"
-            artifact_name: BattleShip-windows-us
-            artifact_path: dist/BattleShip-windows.zip
+            artifact_name: SmashBrotatoes-windows-us
+            artifact_path: dist/SmashBrotatoes-windows.zip
           - version: jp
             enable_scripting: "0"
-            artifact_name: BattleShip-windows-jp
-            artifact_path: dist/BattleShip-JP-windows.zip
+            artifact_name: SmashBrotatoes-windows-jp
+            artifact_path: dist/SmashBrotatoes-JP-windows.zip
     steps:
       - uses: actions/checkout@v4
         with:
@@ -122,8 +122,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            artifacts/BattleShip-windows.zip
-            artifacts/BattleShip-JP-windows.zip
+            artifacts/SmashBrotatoes-windows.zip
+            artifacts/SmashBrotatoes-JP-windows.zip
             artifacts/SHA256SUMS.txt
           generate_release_notes: true
           draft: true   # land as a draft so a human can sanity-check

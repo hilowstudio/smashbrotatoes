@@ -1615,12 +1615,12 @@ void PortMenu::AddMenuAbout() {
     WidgetPath path = { "About", "Build", SECTION_COLUMN_1 };
     AddSidebarEntry("About", "Build", 1);
     AddWidget(path, "About", WIDGET_SEPARATOR_TEXT);
-    AddWidget(path, "BattleShip", WIDGET_TEXT);
+    AddWidget(path, "SmashBrotatoes", WIDGET_TEXT);
     AddWidget(path, "Native Smash 64 PC port powered by libultraship", WIDGET_TEXT);
     AddWidget(path, "Built from the ssb-decomp-re decompilation", WIDGET_TEXT);
 
     AddWidget(path, "Credits", WIDGET_SEPARATOR_TEXT);
-    AddWidget(path, "JRickey: Lead Developer", WIDGET_TEXT);
+    AddWidget(path, "Hi Low Studio LLC", WIDGET_TEXT);
     AddWidget(path, "Jameriquiah: Developer", WIDGET_TEXT);
     AddWidget(path, "the-outcaster: Developer", WIDGET_TEXT);
     AddWidget(path, "TechnicallyComputers and NyxTheShield: Netcode Developers", WIDGET_TEXT);
@@ -1638,7 +1638,7 @@ void PortMenu::AddMenuAbout() {
     ssb64::enhancements::CheckForUpdatesAsync(false);
 
     AddWidget(path, "Updates", WIDGET_SEPARATOR_TEXT);
-    AddWidget(path, "Version: " + std::string(BATTLESHIP_CURRENT_VERSION), WIDGET_TEXT);
+    AddWidget(path, "Version: " + std::string(SMASHBROTATOES_CURRENT_VERSION), WIDGET_TEXT);
 
     // 1. "Checking for updates..." Text
     AddWidget(path, "Checking for updates...", WIDGET_TEXT)

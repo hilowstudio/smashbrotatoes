@@ -176,8 +176,8 @@ The debug runner is controlled with environment variables:
 
 ```sh
 cd build
-SSB64_REPLAY_RECORD=/tmp/test.ssb64r SSB64_REPLAY_RECORD_FRAMES=1800 ./BattleShip
-SSB64_REPLAY_PLAY=/tmp/test.ssb64r ./BattleShip
+SSB64_REPLAY_RECORD=/tmp/test.ssb64r SSB64_REPLAY_RECORD_FRAMES=1800 ./SmashBrotatoes
+SSB64_REPLAY_PLAY=/tmp/test.ssb64r ./SmashBrotatoes
 ```
 
 `SSB64_REPLAY_RECORD_FRAMES` is optional and defaults to 1800 frames. Record mode still uses the normal VS menus; playback mode loads the file and jumps directly into VS battle using the saved metadata.

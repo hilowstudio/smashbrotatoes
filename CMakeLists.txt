@@ -2,12 +2,12 @@ cmake_minimum_required(VERSION 3.24.0 FATAL_ERROR)
 
 project(ssb64 LANGUAGES C CXX)
 
-# This is a Windows-only fork of BattleShip. All non-Windows platform support
+# This is a Windows-only fork of SmashBrotatoes. All non-Windows platform support
 # (macOS, Linux, Android) has been removed from the port layer and build
 # system. Fail fast if someone tries to configure it for another platform.
 if (NOT WIN32)
     message(FATAL_ERROR
-        "This is a Windows-only fork of BattleShip. macOS/Linux/Android "
+        "This is a Windows-only fork of SmashBrotatoes. macOS/Linux/Android "
         "support has been removed. Configure on Windows (MSVC / clang-cl).")
 endif()
 
@@ -29,27 +29,27 @@ include(FetchContent) # pull discord-rpc from GitHub (desktop only)
 # Version string for the built-in updater. String-compared exactly against
 # the name returned by GitHub's /tags API, so it must match the release tag
 # character-for-character (suffix-and-all). Resolution order:
-#   1. -DBATTLESHIP_VERSION=... passed by the caller (release CI sets this
+#   1. -DSMASHBROTATOES_VERSION=... passed by the caller (release CI sets this
 #      to $GITHUB_REF_NAME).
 #   2. `git describe --tags --abbrev=0` for local builds at a tagged commit.
 #   3. "dev" fallback for source tarballs / shallow CI checkouts — those
 #      builds always show "update available", which is the right signal.
-if(NOT BATTLESHIP_VERSION)
+if(NOT SMASHBROTATOES_VERSION)
     find_package(Git QUIET)
     if(Git_FOUND AND EXISTS "${CMAKE_SOURCE_DIR}/.git")
         execute_process(
             COMMAND ${GIT_EXECUTABLE} describe --tags --abbrev=0
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-            OUTPUT_VARIABLE BATTLESHIP_VERSION
+            OUTPUT_VARIABLE SMASHBROTATOES_VERSION
             OUTPUT_STRIP_TRAILING_WHITESPACE
             ERROR_QUIET
         )
     endif()
 endif()
-if(NOT BATTLESHIP_VERSION)
-    set(BATTLESHIP_VERSION "dev")
+if(NOT SMASHBROTATOES_VERSION)
+    set(SMASHBROTATOES_VERSION "dev")
 endif()
-message(STATUS "BattleShip updater version: ${BATTLESHIP_VERSION}")
+message(STATUS "SmashBrotatoes updater version: ${SMASHBROTATOES_VERSION}")
 
 # Pulled-in BEFORE the libultraship subdirectory so its
 # find_package(tinyxml2) sees our pkg-config-fallback shim. Required
@@ -143,14 +143,12 @@ if (NOT DISABLE_SCRIPTING)
     set(FUNCHOOK_BUILD_STATIC ON  CACHE BOOL "" FORCE)
     set(FUNCHOOK_BUILD_TESTS  OFF CACHE BOOL "" FORCE)
     set(FUNCHOOK_INSTALL      OFF CACHE BOOL "" FORCE)
+    # Vendored in-tree (third_party/funchook) at v1.1.3, including its bundled
+    # distorm submodule (funchook uses distorm as its x86 disassembler backend;
+    # the capstone path is arm64-only and unused here, so it isn't vendored).
     FetchContent_Declare(
         funchook
-        GIT_REPOSITORY https://github.com/kubo/funchook.git
-        GIT_TAG        v1.1.3
-        PATCH_COMMAND  ${CMAKE_COMMAND}
-                       -DCAPSTONE_TMPL=cmake/capstone.cmake.in
-                       -DFUNCHOOK_CML=CMakeLists.txt
-                       -P ${CMAKE_SOURCE_DIR}/cmake/funchook_capstone_bump.cmake
+        SOURCE_DIR ${CMAKE_SOURCE_DIR}/third_party/funchook
     )
     FetchContent_MakeAvailable(funchook)
 endif()
@@ -353,7 +351,7 @@ add_custom_command(
 
 add_custom_target(ExtractAssetHeaders
     DEPENDS PrepareBuildInputs
-    COMMENT "BattleShip asset/header generation is driven by PrepareBuildInputs"
+    COMMENT "SmashBrotatoes asset/header generation is driven by PrepareBuildInputs"
 )
 
 ################################################################################
@@ -448,19 +446,19 @@ endif()
 # User-facing application identity. The JP build is a SEPARATE application:
 # distinct binary name, distinct app-data dir (saves/config/logs/o2r), so a
 # user can have both installed and they never touch each other's ROM/o2r.
-# US keeps the historical "BattleShip" so existing installs / the in-app
+# US keeps the historical "SmashBrotatoes" so existing installs / the in-app
 # updater / release links are unaffected. This single value drives the
 # binary OUTPUT_NAME, the libultraship Context name/shortName (which scopes
 # the app-data directory), and the per-platform package scripts.
 if(SSB64_VERSION STREQUAL "jp")
-    set(SSB64_APP_NAME "BattleShip-JP")
+    set(SSB64_APP_NAME "SmashBrotatoes-JP")
 else()
-    set(SSB64_APP_NAME "BattleShip")
+    set(SSB64_APP_NAME "SmashBrotatoes")
 endif()
 message(STATUS "SSB64 app identity: ${SSB64_APP_NAME}")
 
 # Asset-recipe fingerprint: identifies the extraction pipeline (torch +
-# config.yml + recipe yamls) that a BattleShip.o2r was produced by. The
+# config.yml + recipe yamls) that a SmashBrotatoes.o2r was produced by. The
 # port stamps it into a "<o2r>.recipe" sidecar after extraction and
 # re-extracts automatically when a binary update changes the recipe —
 # stale archives from older builds caused reloc-token storms and menu
@@ -493,9 +491,9 @@ set(SSB64_COMPILE_DEFS
     # App identity (binary name + libultraship app-data scope). Quoted so
     # it expands to a C string literal at the use site.
     SSB64_APP_NAME=\"${SSB64_APP_NAME}\"
-    # Per-region archive filename: US writes/reads "BattleShip.o2r"
+    # Per-region archive filename: US writes/reads "SmashBrotatoes.o2r"
     # (preserves the historical name so existing installs keep working);
-    # JP writes/reads "BattleShip-JP.o2r" so a stray archive in CWD or an
+    # JP writes/reads "SmashBrotatoes-JP.o2r" so a stray archive in CWD or an
     # accidental shared install directory can't be picked up by the wrong
     # build (PortLocateFile falls back to CWD on miss, and the bifurcated
     # app-data dirs from issue #190 don't catch that case).
@@ -522,7 +520,7 @@ set(SSB64_COMPILE_DEFS
     CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 
     # Updater
-    BATTLESHIP_CURRENT_VERSION=\"${BATTLESHIP_VERSION}\"
+    SMASHBROTATOES_CURRENT_VERSION=\"${SMASHBROTATOES_VERSION}\"
 
     # Asset-recipe fingerprint (see the computation above SSB64_COMPILE_DEFS)
     SSB64_ASSET_RECIPE_HASH=\"${SSB64_ASSET_RECIPE_HASH}\"
@@ -676,17 +674,18 @@ endif()
 # fetched subdir so the build still configures with current CMake.
 set(CMAKE_POLICY_VERSION_MINIMUM 3.5 CACHE INTERNAL "" FORCE)
 set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-# BattleShip links against the static CRT on Windows (see the
+# SmashBrotatoes links against the static CRT on Windows (see the
 # MSVC_RUNTIME_LIBRARY setting on the ssb64 / ssb64_game targets below).
 # discord-rpc's own CMakeLists guards the static-CRT switch behind
 # USE_STATIC_CRT — opt in so the produced discord-rpc.lib uses the same
 # /MT[d] runtime, otherwise the final link fails with LNK2038.
 set(USE_STATIC_CRT ON CACHE BOOL "" FORCE)
+# Vendored in-tree (third_party/discord-rpc) at v3.4.0; .clang-format already
+# removed from the vendored copy, and rapidjson 1.1.0 is vendored under its
+# thirdparty/ (discord-rpc's CMake find_file's it there instead of downloading).
 FetchContent_Declare(
     discord_rpc
-    GIT_REPOSITORY https://github.com/discordapp/discord-rpc.git
-    GIT_TAG        v3.4.0
-    PATCH_COMMAND  ${CMAKE_COMMAND} -E rm -f .clang-format
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/third_party/discord-rpc
 )
 FetchContent_MakeAvailable(discord_rpc)
 # Belt and suspenders: enforce the runtime-library property on the
@@ -705,8 +704,8 @@ add_executable(${PROJECT_NAME} ${SSB64_SRC_PORT} ${SSB64_DEBUG_TOOLS} $<TARGET_O
 
 # User-facing binary name. The CMake target keeps the historical
 # `ssb64` identifier (matches the repo, build dirs, internal symbols),
-# but the produced executable is `${SSB64_APP_NAME}` — `BattleShip`
-# (US) or `BattleShip-JP` (JP), so the two are distinct applications.
+# but the produced executable is `${SSB64_APP_NAME}` — `SmashBrotatoes`
+# (US) or `SmashBrotatoes-JP` (JP), so the two are distinct applications.
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "${SSB64_APP_NAME}")
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
@@ -819,7 +818,7 @@ endif()
 ################################################################################
 # TCC mod scripting: export the engine's full symbol table so libtcc-compiled
 # mods can resolve any engine function by name. On Windows this is what makes
-# `tcc.exe -impdef BattleShip.exe -o BattleShip.def` produce a useful export
+# `tcc.exe -impdef SmashBrotatoes.exe -o SmashBrotatoes.def` produce a useful export
 # list for ScriptLoader's memory-mode symbol registration.
 ################################################################################
 if(NOT DISABLE_SCRIPTING)
@@ -886,15 +885,15 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 )
 
 ################################################################################
-# TCC mod scripting: post-build .tcc/ population + BattleShip.def generation
+# TCC mod scripting: post-build .tcc/ population + SmashBrotatoes.def generation
 #
 # At runtime the engine's ScriptLoader feeds mod source through libtcc with
 # include paths under .tcc/include/ and library paths under .tcc/lib/. We
 # populate both from the FetchContent'd TinyCC source tree so the binary is
 # self-contained; modders don't have to install TinyCC.
 #
-# On Windows we additionally run `tcc.exe -impdef BattleShip.exe -o
-# BattleShip.def` to generate the export-name list that ScriptLoader resolves
+# On Windows we additionally run `tcc.exe -impdef SmashBrotatoes.exe -o
+# SmashBrotatoes.def` to generate the export-name list that ScriptLoader resolves
 # against the running process before TCC relocates mod code. WINDOWS_EXPORT_ALL_SYMBOLS
 # (set above) makes the EXE's export table contain every engine function so
 # the .def covers them all.
@@ -928,10 +927,10 @@ if(NOT DISABLE_SCRIPTING)
             VERBATIM
         )
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-            COMMENT "Generating BattleShip.def via tcc -impdef..."
+            COMMENT "Generating SmashBrotatoes.def via tcc -impdef..."
             COMMAND "$<TARGET_FILE:tcc>"
                     -impdef "$<TARGET_FILE:${PROJECT_NAME}>"
-                    -o "$<TARGET_FILE_DIR:${PROJECT_NAME}>/.tcc/lib/BattleShip.def"
+                    -o "$<TARGET_FILE_DIR:${PROJECT_NAME}>/.tcc/lib/SmashBrotatoes.def"
             VERBATIM
         )
         add_dependencies(${PROJECT_NAME} tcc)
@@ -955,18 +954,18 @@ if(NOT SSB64_BASEROM)
     set(SSB64_BASEROM "${CMAKE_SOURCE_DIR}/baserom.${SSB64_VERSION}.z64")
 endif()
 
-# BattleShip.o2r is per-ROM-version. The decomp is region-split, so US and
+# SmashBrotatoes.o2r is per-ROM-version. The decomp is region-split, so US and
 # JP use separate build dirs — extracting into the SHARED source root made a
 # US build and a JP build clobber each other's archive. Extract into a
 # per-build-dir sink (${CMAKE_BINARY_DIR}/extracted) instead, then stage it
 # next to the binary. Torch writes config.yml's `output.binary`
-# (BattleShip.o2r, identical for both regions) into its `-d` dir,
+# (SmashBrotatoes.o2r, identical for both regions) into its `-d` dir,
 # independent of `-s` (where it reads config/yamls). The runtime archive
-# name stays the fixed "BattleShip.o2r"; only the dev-build location is
+# name stays the fixed "SmashBrotatoes.o2r"; only the dev-build location is
 # isolated. Packaged-release first-run extraction (sidecar torch +
 # config.yml, its own -d) is unaffected.
 set(SSB64_O2R_DIR ${CMAKE_BINARY_DIR}/extracted)
-set(SSB64_O2R     ${SSB64_O2R_DIR}/BattleShip.o2r)
+set(SSB64_O2R     ${SSB64_O2R_DIR}/SmashBrotatoes.o2r)
 
 # Two configurations:
 #
@@ -1008,8 +1007,8 @@ if(EXISTS "${SSB64_BASEROM}")
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${SSB64_O2R}
-            $<TARGET_FILE_DIR:${PROJECT_NAME}>/BattleShip.o2r
-        COMMENT "Staging BattleShip.o2r next to ssb64 binary"
+            $<TARGET_FILE_DIR:${PROJECT_NAME}>/SmashBrotatoes.o2r
+        COMMENT "Staging SmashBrotatoes.o2r next to ssb64 binary"
     )
 else()
     add_custom_target(ExtractAssets
@@ -1018,12 +1017,12 @@ else()
         COMMAND ${CMAKE_COMMAND} -E false
         COMMENT "ExtractAssets stub — baserom missing"
     )
-    message(STATUS "BattleShip.o2r: baserom absent — ExtractAssets stub installed")
+    message(STATUS "SmashBrotatoes.o2r: baserom absent — ExtractAssets stub installed")
 endif()
 
-add_custom_target(GenerateBattleShipO2R
+add_custom_target(GenerateSmashBrotatoesO2R
     DEPENDS ExtractAssets
-    COMMENT "Generating BattleShip.o2r"
+    COMMENT "Generating SmashBrotatoes.o2r"
 )
 
 # ── CSS stage asset extraction ─────────────────────────────────────────────
@@ -1116,7 +1115,7 @@ else()
 endif()
 
 # NOTE: there is intentionally no port-asset o2r target. `ssb64.o2r` was an
-# early-development artifact; the runtime loads only BattleShip.o2r
+# early-development artifact; the runtime loads only SmashBrotatoes.o2r
 # (ROM-derived, user-extracted at first run) and f3d.o2r (shaders). No
 # ROM-derived data is ever produced by the build.
 

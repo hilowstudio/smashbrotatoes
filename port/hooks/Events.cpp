@@ -1,5 +1,5 @@
 /*
- * Events.cpp — Allocates the storage for BattleShip's event IDs and
+ * Events.cpp — Allocates the storage for SmashBrotatoes's event IDs and
  * registers each event with libultraship's EventSystem at engine init.
  *
  * Allocation: this is the ONE translation unit that defines

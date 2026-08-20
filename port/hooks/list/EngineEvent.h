@@ -1,7 +1,7 @@
 /*
- * EngineEvent.h — Engine-loop and UI events for BattleShip mods.
+ * EngineEvent.h — Engine-loop and UI events for SmashBrotatoes mods.
  *
- * These are the events fired from BattleShip's main loop and from the
+ * These are the events fired from SmashBrotatoes's main loop and from the
  * port's ImGui render. Mods subscribe via REGISTER_LISTENER from
  * libultraship's bridge/eventsbridge.
  *

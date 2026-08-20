@@ -1,4 +1,4 @@
-# BattleShip TCC mod template — packaging-only build.
+# SmashBrotatoes TCC mod template — packaging-only build.
 #
 # This CMakeLists doesn't compile your mod (TCC does that at runtime
 # inside the engine). It only:
@@ -10,11 +10,11 @@
 #      engine's ScriptLoader feeds to libtcc at runtime.
 #
 # After `cmake --build .`, drop the entire output/ folder into your
-# BattleShip install's mods/ directory (or zip it as a .zip / pack as
+# SmashBrotatoes install's mods/ directory (or zip it as a .zip / pack as
 # .o2r for distribution).
 
 cmake_minimum_required(VERSION 3.10)
-project(BattleShipModTemplate)
+project(SmashBrotatoesModTemplate)
 
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 

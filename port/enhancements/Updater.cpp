@@ -37,16 +37,16 @@ static std::mutex s_stringMutex; // Only locks when reading/writing the actual t
 
 namespace {
 
-#ifndef BATTLESHIP_CURRENT_VERSION
-#define BATTLESHIP_CURRENT_VERSION "v1.0.0"
+#ifndef SMASHBROTATOES_CURRENT_VERSION
+#define SMASHBROTATOES_CURRENT_VERSION "v1.0.0"
 #endif
 
 constexpr const char* kLatestReleaseApi =
-    "https://api.github.com/repos/JRickey/BattleShip/releases/latest";
+    "https://api.github.com/repos/hilowstudio/smashbrotatoes/releases/latest";
 constexpr const char* kReleasePageUrl =
-    "https://github.com/JRickey/BattleShip/releases/latest";
+    "https://github.com/hilowstudio/smashbrotatoes/releases/latest";
 
-constexpr const char* kPlatformAssetName = "BattleShip-windows.zip";
+constexpr const char* kPlatformAssetName = "SmashBrotatoes-windows.zip";
 
 void SetUpdateStatus(const std::string& status) {
     std::lock_guard<std::mutex> lock(s_stringMutex);
@@ -120,7 +120,7 @@ int RunCapture(std::string cmd, const std::function<void(const std::string&)>& o
 }
 
 std::string BuildCheckCommand() {
-    return std::string("curl -fLsS -m 10 -H \"User-Agent: BattleShip-Updater\" ") +
+    return std::string("curl -fLsS -m 10 -H \"User-Agent: SmashBrotatoes-Updater\" ") +
            "\"" + kLatestReleaseApi + "\"";
 }
 
@@ -204,7 +204,7 @@ void CheckForUpdatesAsync(bool force) {
                     s_downloadUrl.clear();
                 }
 
-                if (latestTag != BATTLESHIP_CURRENT_VERSION) {
+                if (latestTag != SMASHBROTATOES_CURRENT_VERSION) {
                     std::string assetUrl;
                     if (!FindPlatformAssetUrl(release, &assetUrl)) {
                         s_updateCheckFailed.store(true);
@@ -256,7 +256,7 @@ void StartGameUpdate() {
 
         // Anchor everything to the install directory — CWD can be anywhere
         // (Start Menu launches use the user profile), and the .bat extracts
-        // over the game files, so it must run where BattleShip.exe lives.
+        // over the game files, so it must run where SmashBrotatoes.exe lives.
         std::string exeDir;
         {
             char exePath[MAX_PATH];
@@ -301,9 +301,9 @@ void StartGameUpdate() {
             if (bat) {
                 fprintf(bat, "@echo off\n");
                 fprintf(bat, "cd /d \"%s\"\n", exeDir.c_str());
-                fprintf(bat, "echo Update downloaded! Waiting for BattleShip to close before applying...\n");
+                fprintf(bat, "echo Update downloaded! Waiting for SmashBrotatoes to close before applying...\n");
                 fprintf(bat, ":wait\n");
-                fprintf(bat, "tasklist /FI \"IMAGENAME eq BattleShip.exe\" 2>NUL | find /I /N \"BattleShip.exe\">NUL\n");
+                fprintf(bat, "tasklist /FI \"IMAGENAME eq SmashBrotatoes.exe\" 2>NUL | find /I /N \"SmashBrotatoes.exe\">NUL\n");
                 fprintf(bat, "if \"%%ERRORLEVEL%%\"==\"0\" (\n");
                 fprintf(bat, "    timeout /t 1 /nobreak > NUL\n");
                 fprintf(bat, "    goto wait\n");
@@ -311,7 +311,7 @@ void StartGameUpdate() {
                 fprintf(bat, "echo Installing update...\n");
                 fprintf(bat, "tar -xf update_temp.zip\n");
                 fprintf(bat, "del update_temp.zip\n");
-                fprintf(bat, "start BattleShip.exe\n");
+                fprintf(bat, "start SmashBrotatoes.exe\n");
                 fprintf(bat, "(goto) 2>nul & del \"%%~f0\"\n");
                 fclose(bat);
 

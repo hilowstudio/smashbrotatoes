@@ -1,5 +1,5 @@
 /*
- * FighterEvent.h — Fighter-system query/notify events for BattleShip mods.
+ * FighterEvent.h — Fighter-system query/notify events for SmashBrotatoes mods.
  *
  * These are mid-function override points inside decomp fighter code where
  * no discrete engine symbol exists to detour (the surrounding functions are

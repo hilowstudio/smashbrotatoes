@@ -46,7 +46,7 @@ namespace ssb64 {
 namespace {
 
 /* Asset-recipe fingerprint baked in by CMake (torch submodule SHA +
- * config.yml + yamls/<region> hashes). A BattleShip.o2r extracted by a
+ * config.yml + yamls/<region> hashes). A SmashBrotatoes.o2r extracted by a
  * different pipeline version is format-incompatible with this binary —
  * symptoms range from reloc-token storms to menu crashes (issues #217,
  * #221) — and users had to discover "delete everything and re-extract"
@@ -450,7 +450,7 @@ ExtractionResult ExtractAssetsIfNeeded(const std::string& target_o2r_path, bool 
             return { true, targetPath.string(), {}, logPath };
         }
         const std::string msg =
-            "BattleShip failed to extract assets from your ROM.\n\n"
+            "SmashBrotatoes failed to extract assets from your ROM.\n\n"
             "Error:\n  " + commandError +
             "\n\nCheck the extraction log for details:\n  " + logPath +
             "\n\nThe most common cause is a non-NTSC-U-v1.0 ROM. Verify your "
@@ -463,9 +463,9 @@ ExtractionResult ExtractAssetsIfNeeded(const std::string& target_o2r_path, bool 
         return BuildFailure(commandError, logPath);
     }
 
-    // Torch emits with the historical "BattleShip.o2r" name; the port
+    // Torch emits with the historical "SmashBrotatoes.o2r" name; the port
     // renames into the per-region SSB64_O2R_NAME below.
-    const std::string emitted = (workDir / "BattleShip.o2r").string();
+    const std::string emitted = (workDir / "SmashBrotatoes.o2r").string();
     if (!fs::exists(emitted)) {
         port_log("first_run: ERROR extractor reported success but %s is missing\n",
                  emitted.c_str());
@@ -597,7 +597,7 @@ bool RunFirstRunWizard(const std::string& target_o2r_path) {
                                        ImGuiWindowFlags_NoMove |
                                        ImGuiWindowFlags_NoSavedSettings)) {
                 ImGui::TextWrapped(
-                    "BattleShip needs to extract assets from your "
+                    "SmashBrotatoes needs to extract assets from your "
                     "Nintendo 64 ROM before it can launch.");
                 ImGui::Spacing();
                 ImGui::TextWrapped(

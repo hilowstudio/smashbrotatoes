@@ -11,7 +11,7 @@ struct ExtractionResult {
     std::string logPath;
 };
 
-/* Ensure BattleShip.o2r exists at `target_o2r_path`. If it doesn't, locate a
+/* Ensure SmashBrotatoes.o2r exists at `target_o2r_path`. If it doesn't, locate a
  * ROM (.z64 / .n64 / .v64), config.yml + yamls/us, and invoke the standalone
  * Torch executable to build the archive. */
 // silent=true suppresses native SDL_ShowSimpleMessageBox popups. The

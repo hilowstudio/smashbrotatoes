@@ -6,9 +6,9 @@ format mirrors the in-memory `LBBackupData` struct from `src/lb/lbtypes.h`
 exactly (little-endian, native LP64 alignment, two redundant slots).
 
 Default save file location (when --file is omitted):
-    macOS   ~/Library/Application Support/BattleShip/ssb64_save.bin
-    Linux   ${XDG_DATA_HOME:-~/.local/share}/BattleShip/ssb64_save.bin
-    Windows %APPDATA%\\BattleShip\\ssb64_save.bin
+    macOS   ~/Library/Application Support/SmashBrotatoes/ssb64_save.bin
+    Linux   ${XDG_DATA_HOME:-~/.local/share}/SmashBrotatoes/ssb64_save.bin
+    Windows %APPDATA%\\SmashBrotatoes\\ssb64_save.bin
 
 The same path is used by the running game (port_save.cpp resolves it via
 SDL_GetPrefPath, with override env var `SSB64_SAVE_PATH`).
@@ -413,7 +413,7 @@ def _is_portable_build() -> bool:
     """Return True if the local CMake build was configured with
     NON_PORTABLE=OFF — in which case the running binary writes
     `ssb64_save.bin` to its cwd (the project root, when launched as
-    `build/BattleShip` from the repo) instead of the OS app-data dir.
+    `build/SmashBrotatoes` from the repo) instead of the OS app-data dir.
 
     This is the default for dev/in-tree CMake configures and is what
     catches people out: the python script wrote to the macOS app-data
@@ -441,7 +441,7 @@ def default_save_path() -> Path:
       3. Project root if the local CMake build is NON_PORTABLE=OFF —
          the dev-checkout default. The binary writes `./ssb64_save.bin`
          relative to cwd, which is the repo root when launched as
-         `build/BattleShip` from there.
+         `build/SmashBrotatoes` from there.
       4. NON_PORTABLE app-data dir (the default for release bundles).
     """
     env = os.environ.get("SSB64_SAVE_PATH")
@@ -457,13 +457,13 @@ def default_save_path() -> Path:
         return _PROJECT_ROOT / "ssb64_save.bin"
 
     if sys.platform == "darwin":
-        base = Path.home() / "Library" / "Application Support" / "BattleShip"
+        base = Path.home() / "Library" / "Application Support" / "SmashBrotatoes"
     elif sys.platform.startswith("win"):
         appdata = os.environ.get("APPDATA")
-        base = Path(appdata) / "BattleShip" if appdata else Path.cwd()
+        base = Path(appdata) / "SmashBrotatoes" if appdata else Path.cwd()
     else:
         xdg = os.environ.get("XDG_DATA_HOME")
-        base = Path(xdg) / "BattleShip" if xdg else Path.home() / ".local" / "share" / "BattleShip"
+        base = Path(xdg) / "SmashBrotatoes" if xdg else Path.home() / ".local" / "share" / "SmashBrotatoes"
     return base / "ssb64_save.bin"
 
 

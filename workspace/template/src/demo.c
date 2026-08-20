@@ -1,5 +1,5 @@
 /*
- * demo.c — minimal BattleShip TCC mod sample.
+ * demo.c — minimal SmashBrotatoes TCC mod sample.
  *
  * Subscribes to GamePostUpdateEvent and prints a heartbeat once per
  * second to the engine's log. This is the simplest possible mod shape:
@@ -7,7 +7,7 @@
  *
  * To extend:
  *   - Subscribe to additional events from port/hooks/list/EngineEvent.h.
- *   - Call into engine functions that are exported in BattleShip.def
+ *   - Call into engine functions that are exported in SmashBrotatoes.def
  *     (auto-generated post-build via tcc.exe -impdef).
  *   - Cross-mod calls go through ScriptGetFunction("ModName", "func").
  */

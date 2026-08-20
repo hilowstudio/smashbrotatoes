@@ -1,11 +1,11 @@
 name: Build
 
-# Per-PR compile gate. Builds the BattleShip binary on Windows (MSVC) on every
+# Per-PR compile gate. Builds the SmashBrotatoes binary on Windows (MSVC) on every
 # pull_request and push to main, so a contribution that fails to compile is
 # caught before review and merge.
 #
 # Build-only by design: never packages an installer, never produces
-# BattleShip.o2r. ROM-independent end-to-end. Dep lists and build invocation
+# SmashBrotatoes.o2r. ROM-independent end-to-end. Dep lists and build invocation
 # mirror release.yml's Windows job minus packaging, so a green run here predicts
 # a green release build.
 #

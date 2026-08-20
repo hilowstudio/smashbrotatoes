@@ -14,11 +14,11 @@
 //
 //   1. $SSB64_SAVE_PATH                  — explicit override (debug / CI).
 //   2. Ship::Context::GetPathRelativeToAppDirectory("ssb64_save.bin")
-//      — same convention as BattleShip.o2r and BattleShip.cfg.json:
+//      — same convention as SmashBrotatoes.o2r and SmashBrotatoes.cfg.json:
 //         * NON_PORTABLE=ON                                 → OS app-data dir
-//             macOS    ~/Library/Application Support/BattleShip/
-//             Linux    $XDG_DATA_HOME/BattleShip/  (or ~/.local/share/...)
-//             Windows  %APPDATA%\BattleShip\
+//             macOS    ~/Library/Application Support/SmashBrotatoes/
+//             Linux    $XDG_DATA_HOME/SmashBrotatoes/  (or ~/.local/share/...)
+//             Windows  %APPDATA%\SmashBrotatoes\
 //         * NON_PORTABLE=OFF                                → cwd (portable)
 //         * SHIP_HOME=<dir>                                 → that dir wins on macOS/Linux
 //   3. SDL_GetPrefPath fallback                              — only if Ship::Context
@@ -40,7 +40,7 @@ void resolveSavePath()
         return;
     }
     try {
-        // Mirrors how BattleShip.o2r / BattleShip.cfg.json / logs/*.log
+        // Mirrors how SmashBrotatoes.o2r / SmashBrotatoes.cfg.json / logs/*.log
         // are located. Honors SHIP_HOME and the NON_PORTABLE build flag.
         gSavePath = Ship::Context::GetPathRelativeToAppDirectory("ssb64_save.bin");
         if (!gSavePath.empty()) {
@@ -49,7 +49,7 @@ void resolveSavePath()
     } catch (...) {
         // Ship::Context not yet alive — fall through.
     }
-    if (char *p = SDL_GetPrefPath(NULL, "BattleShip")) {
+    if (char *p = SDL_GetPrefPath(NULL, "SmashBrotatoes")) {
         gSavePath = std::string(p) + "ssb64_save.bin";
         SDL_free(p);
         return;

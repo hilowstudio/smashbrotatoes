@@ -105,14 +105,14 @@ TEST(PostProcessRuntimeDiagnostics, SetResolvedPathOverwritesPathOnly) {
     Fast::internal::SetPostProcessRuntimeActive(
         "crt-lottes", "legacy", 1u, "fs:/tmp/initial.glsl");
     Fast::internal::SetPostProcessRuntimeResolvedPath(
-        "fs:/Users/me/.local/share/BattleShip/shaders/crt-lottes.glsl");
+        "fs:/Users/me/.local/share/SmashBrotatoes/shaders/crt-lottes.glsl");
 
     const auto snap = Fast::GetPostProcessRuntimeDiagnostics();
     EXPECT_TRUE(snap.active);
     EXPECT_EQ(snap.name, "crt-lottes");
     EXPECT_EQ(snap.passCount, 1u);
     EXPECT_EQ(snap.resolvedPath,
-              "fs:/Users/me/.local/share/BattleShip/shaders/crt-lottes.glsl");
+              "fs:/Users/me/.local/share/SmashBrotatoes/shaders/crt-lottes.glsl");
 }
 
 // Concurrent SetError + Get under repeated calls must not blow up

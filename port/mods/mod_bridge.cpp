@@ -2,7 +2,7 @@
  * mod_bridge.cpp - C-callable host-side functions exposed to TCC mods.
  *
  * TCC mods call these names directly via TCC's link against
- * BattleShip.def. They wrap the engine subsystems the mods need from
+ * SmashBrotatoes.def. They wrap the engine subsystems the mods need from
  * inside MOD_INIT and at runtime: HookManager for installing detours
  * and SymbolResolver for looking up engine functions by name.
  *

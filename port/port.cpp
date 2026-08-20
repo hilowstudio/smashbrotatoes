@@ -64,7 +64,7 @@ extern "C" void* sModBridgeAnchorResolve = (void*)&mod_resolve_symbol;
 
 /* MSVC's WINDOWS_EXPORT_ALL_SYMBOLS pass exports global *functions* but
  * not most non-trivial global *data* objects, so engine globals like
- * gGCCommonLinks don't make it into BattleShip.def and TCC mods can't
+ * gGCCommonLinks don't make it into SmashBrotatoes.def and TCC mods can't
  * resolve them by name. Wrap the ones mods commonly want behind tiny
  * accessor functions; functions always export. */
 extern "C" struct GObj;
@@ -545,10 +545,10 @@ void UnmountMissingMods() {
 // anything other than an ENOENT-equivalent. On Win10 19042 the
 // NON_PORTABLE app-data probe path (SDL_GetPrefPath returns a
 // backslash-terminated path, joined with a literal "/" — yielding
-// e.g. "C:\\Users\\u\\AppData\\Roaming\\BattleShip\\/f3d.o2r")
+// e.g. "C:\\Users\\u\\AppData\\Roaming\\SmashBrotatoes\\/f3d.o2r")
 // reportedly trips that error and the unwind from the throw fast-fails
 // the process via the heap-corruption detector before any user-level
-// catch can run (BattleShip issue #58).
+// catch can run (SmashBrotatoes issue #58).
 //
 // Two differences from the LUS version:
 //   1. Use the noexcept exists(p, ec) overload — false is the right
@@ -556,8 +556,8 @@ void UnmountMissingMods() {
 //   2. Probe the bundle dir via ssb64::RealAppBundlePath(), which
 //      returns the actual exe directory on Windows portable-zip
 //      distros. Ship::Context::GetAppBundlePath() under NON_PORTABLE
-//      returns the literal CMAKE_INSTALL_PREFIX ("BattleShip"), which
-//      is wrong for any user that doesn't unzip into a "BattleShip"
+//      returns the literal CMAKE_INSTALL_PREFIX ("SmashBrotatoes"), which
+//      is wrong for any user that doesn't unzip into a "SmashBrotatoes"
 //      subdir matching their cwd.
 static std::string PortLocateFile(const std::string& basename) {
 	namespace fs = std::filesystem;
@@ -640,21 +640,21 @@ static int PortInitImpl(int argc, char* argv[]) {
 		port_dl_ranges_init();
 	}
 
-	/* App identity comes from CMake (SSB64_APP_NAME = "BattleShip" for US,
-	 * "BattleShip-JP" for JP). The shortName scopes libultraship's
+	/* App identity comes from CMake (SSB64_APP_NAME = "SmashBrotatoes" for US,
+	 * "SmashBrotatoes-JP" for JP). The shortName scopes libultraship's
 	 * app-data directory (Context::GetAppDirectoryPath →
 	 * ~/Library/Application Support/<shortName>, $XDG_DATA_HOME/<shortName>,
 	 * %APPDATA%\<shortName>), so US and JP get fully separate
-	 * saves/config/logs/BattleShip.o2r and can never read each other's
+	 * saves/config/logs/SmashBrotatoes.o2r and can never read each other's
 	 * ROM-derived data. The config filename stays fixed — it already
 	 * lives inside the per-app (bifurcated) directory. */
 #ifndef SSB64_APP_NAME
-#define SSB64_APP_NAME "BattleShip"
+#define SSB64_APP_NAME "SmashBrotatoes"
 #endif
 	sContext = Ship::Context::CreateUninitializedInstance(
 		SSB64_APP_NAME,
 		SSB64_APP_NAME,
-		"BattleShip.cfg.json"
+		"SmashBrotatoes.cfg.json"
 	);
 
 	if (!sContext) {
@@ -800,7 +800,7 @@ static int PortInitImpl(int argc, char* argv[]) {
 	 *      with the binary (always present, no ROM needed).
 	 *   3. Window + Port Menu
 	 *   4. First-run flow: silent in-process extraction, then ImGui wizard if needed.
-	 *      Once BattleShip.o2r is on disk we add it via ArchiveManager.
+	 *      Once SmashBrotatoes.o2r is on disk we add it via ArchiveManager.
 	 *   5. Audio / GfxDebugger / FileDropMgr / factory registration. */
 	if (!sContext->InitCrashHandler()) { port_log("SSB64: InitCrashHandler failed\n"); return 1; }
 	if (!sContext->InitConsole()) { port_log("SSB64: InitConsole failed\n"); return 1; }
@@ -914,31 +914,31 @@ static int PortInitImpl(int argc, char* argv[]) {
 
 	{
 		// Add the per-region game archive to the running ResourceManager
-		// now that it exists (SSB64_O2R_NAME = BattleShip.o2r on US,
-		// BattleShip-JP.o2r on JP — see CMakeLists.txt).
+		// now that it exists (SSB64_O2R_NAME = SmashBrotatoes.o2r on US,
+		// SmashBrotatoes-JP.o2r on JP — see CMakeLists.txt).
 		auto am = sContext->GetResourceManager()->GetArchiveManager();
 
-		// Optional: BattleShip.fromsource.o2r contains relocData resources
+		// Optional: SmashBrotatoes.fromsource.o2r contains relocData resources
 		// produced by compiling decomp/src/relocData/*.c via the source-
 		// compile pipeline (tools/build_reloc_resource.py). Adding it BEFORE
-		// the Torch-extracted BattleShip.o2r means the LUS ArchiveManager's
+		// the Torch-extracted SmashBrotatoes.o2r means the LUS ArchiveManager's
 		// FIFO-wins lookup serves source-compiled entries for matching
 		// resource paths. The file is gitignored / produced by the
-		// BuildBattleShipFromSource CMake target, which is gated on clang
+		// BuildSmashBrotatoesFromSource CMake target, which is gated on clang
 		// availability — when missing the load is silently skipped and
 		// runtime behaves exactly as the pre-M2 Torch-only path.
 		if (const char *fromsource = std::getenv("SSB64_RELOC_FROMSOURCE");
 			fromsource && fromsource[0] == '1') {
-			const std::string fs = PortLocateFile("BattleShip.fromsource.o2r");
+			const std::string fs = PortLocateFile("SmashBrotatoes.fromsource.o2r");
 			if (!fs.empty()) {
-				port_log("SSB64: SSB64_RELOC_FROMSOURCE=1 -> adding %s ahead of BattleShip.o2r\n",
+				port_log("SSB64: SSB64_RELOC_FROMSOURCE=1 -> adding %s ahead of SmashBrotatoes.o2r\n",
 				         fs.c_str());
 				if (!am->AddArchive(fs)) {
 					port_log("SSB64: AddArchive failed for %s (continuing with Torch-extracted reloc data)\n",
 					         fs.c_str());
 				}
 			} else {
-				port_log("SSB64: SSB64_RELOC_FROMSOURCE=1 set but BattleShip.fromsource.o2r not found\n");
+				port_log("SSB64: SSB64_RELOC_FROMSOURCE=1 set but SmashBrotatoes.fromsource.o2r not found\n");
 			}
 		}
 
@@ -978,7 +978,7 @@ static int PortInitImpl(int argc, char* argv[]) {
 #ifndef DISABLE_SCRIPTING
 	// TCC mod scripting: configure the include paths + library paths under
 	// .tcc/ that the engine populates post-build (see CMakeLists.txt). On
-	// Windows BattleShip.def is an export-name list that ScriptLoader resolves
+	// Windows SmashBrotatoes.def is an export-name list that ScriptLoader resolves
 	// against the running EXE before TCC relocates mods into memory; on Unix
 	// mods resolve symbols dynamically via the host process's exported symbols.
 	{
@@ -1004,7 +1004,7 @@ static int PortInitImpl(int argc, char* argv[]) {
 			Ship::Context::GetPathRelativeToAppDirectory(".tcc/lib"),
 		};
 #ifdef _WIN32
-		std::vector<std::string> libraries = { "BattleShip.def", "tcc1" };
+		std::vector<std::string> libraries = { "SmashBrotatoes.def", "tcc1" };
 #else
 		std::vector<std::string> libraries = { "tcc1" };
 #endif
@@ -1163,12 +1163,12 @@ int PortIsRunning(void) {
 int main(int argc, char* argv[]) {
 	/* Use an absolute path for ssb64.log so it lands in a predictable
 	 * place regardless of how the binary was launched. SDL_GetPrefPath
-	 * returns the OS app-data dir (%APPDATA%\BattleShip\) and creates it
+	 * returns the OS app-data dir (%APPDATA%\SmashBrotatoes\) and creates it
 	 * on demand — the same dir Ship::Context later uses for the user's
 	 * saves and o2r. */
 	{
 		std::string logPath;
-		if (char* p = SDL_GetPrefPath(NULL, "BattleShip")) {
+		if (char* p = SDL_GetPrefPath(NULL, "SmashBrotatoes")) {
 			logPath = std::string(p) + "ssb64.log";
 			SDL_free(p);
 		} else {
