@@ -1,16 +1,12 @@
 # Building SmashBrotatoes
 
 SmashBrotatoes builds with CMake. `libultraship` and `torch` are vendored
-directly in this repository (no submodules to initialize).
-Both the **US** (NTSC-U v1.0, `NALE`) and **JP** (Nintendo All-Star!
-Dairantou Smash Brothers, `NALJ`) versions are supported. The decomp game
-code is region-conditionally compiled, so each version is its own build —
-pick the version at configure time with `-DSSB64_VERSION=us|jp` and use a
-separate build directory per version.
+directly in this repository (no submodules to initialize). This is a US-only
+fork (NTSC-U v1.0, `NALE`).
 
-The flow is **three commands per version**: configure, build, run. Asset
-extraction from your ROM happens automatically as part of the build
-(cached afterwards) — there is no separate extract step.
+The flow is **three commands**: configure, build, run. Asset extraction from
+your ROM happens automatically as part of the build (cached afterwards) —
+there is no separate extract step.
 
 SmashBrotatoes is Windows-only. Builds use CMake + Visual Studio 2022 (MSVC)
 with the DirectX11/OpenGL renderer and WASAPI audio.
@@ -22,14 +18,11 @@ with the DirectX11/OpenGL renderer and WASAPI audio.
 - CMake
 - Python 3 with Pillow (`pip install Pillow`)
 - Git
-- A legal ROM at the repo root matching the version you are building:
-  - **US:** `baserom.us.z64` — `cmake -DSSB64_VERSION=us` (default)
-  - **JP:** `baserom.jp.z64` — `cmake -DSSB64_VERSION=jp`
+- A legal `baserom.us.z64` at the repo root:
 
   | Version | Game code | SHA‑1 | MD5 |
   |---------|-----------|-------|-----|
   | US (NTSC-U v1.0) | `NALE` | `e2929e10fccc0aa84e5776227e798abc07cedabf` | `f7c52568a31aadf26e14dc2b6416b2ed` |
-  | JP (NALJ v1.0)   | `NALJ` | `4b71f0e01878696733eefa9c80d11c147ecb4984` | `66db457b130d31a286a23d6e4dd9726e` |
 
   A dump that doesn't match these hashes will not work.
 

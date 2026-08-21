@@ -83,17 +83,13 @@ option(NON_EQUIVALENT "Build without equivalent decomp constraints" ON)
 option(USE_AUTO_VCPKG "Use automated vcpkg for dependency management" ON)
 option(SSB64_STAGE_CYCLE_DEMO "Boot directly into attract-demo stage cycle for rendering regression testing" OFF)
 
-# ROM version to build. The decomp game code is region-conditionally
-# compiled (#if REGION_US / REGION_JP), so US and JP are separate builds —
-# use a dedicated build dir per version. The user still supplies their own
-# ROM (baserom.<version>.{z64,n64,v64}); no assets are shipped.
-set(SSB64_VERSION "us" CACHE STRING "ROM version to build: us or jp")
-set_property(CACHE SSB64_VERSION PROPERTY STRINGS us jp)
-if(NOT SSB64_VERSION MATCHES "^(us|jp)$")
-    message(FATAL_ERROR "SSB64_VERSION must be 'us' or 'jp' (got '${SSB64_VERSION}')")
-endif()
+# US-only fork (NTSC-U v1.0). JP support was removed; the decomp still carries
+# inert #if REGION_JP arms (compiled out). The user supplies their own
+# baserom.us.z64; no assets are shipped. SSB64_VERSION is retained (fixed to
+# "us") only because build paths (yamls/us, reloc_data.us.h, etc.) key off it.
+set(SSB64_VERSION "us")
 string(TOUPPER "${SSB64_VERSION}" SSB64_VERSION_UC)
-message(STATUS "SSB64 ROM version: ${SSB64_VERSION}")
+message(STATUS "SSB64 ROM version: ${SSB64_VERSION} (US-only)")
 
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
 
