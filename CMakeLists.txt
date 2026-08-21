@@ -223,12 +223,8 @@ add_custom_target(PrepareBuildInputs
 # The taskbar/window icon on Windows comes from the .ico baked into the PE
 # via port/ssb64.rc.in (see the WINDOWS block below), so port_window_icon.cpp
 # is a no-op stub. The tools/embed_icon.py PNG bake below (port_icon_data.h)
-# is retained but currently unused on Windows. Region-aware: US uses
-# assets/icon.png, JP uses assets/icon-jp.png.
+# is retained but currently unused on Windows.
 set(SSB64_ICON_PNG ${CMAKE_CURRENT_SOURCE_DIR}/assets/icon.png)
-if(SSB64_VERSION STREQUAL "jp")
-    set(SSB64_ICON_PNG ${CMAKE_CURRENT_SOURCE_DIR}/assets/icon-jp.png)
-endif()
 set(SSB64_ICON_GEN_DIR ${CMAKE_CURRENT_BINARY_DIR}/generated)
 set(SSB64_ICON_GEN ${SSB64_ICON_GEN_DIR}/port_icon_data.h)
 add_custom_command(
@@ -409,13 +405,6 @@ set(SSB64_DECOMP_SOURCES
 # Exclude .inc.c files (inline data included by other .c files)
 list(FILTER SSB64_DECOMP_SOURCES EXCLUDE REGEX "\\.inc\\.c$")
 
-# JP build excludes the US-only startup/congratulations menu sources
-# (matches the upstream decomp Makefile's VERSION=jp C_FILES filter-out).
-if(SSB64_VERSION STREQUAL "jp")
-    list(FILTER SSB64_DECOMP_SOURCES EXCLUDE REGEX
-        "decomp/src/mn/mncommon/(mncongra|mnstartup)\\.c$")
-endif()
-
 ################################################################################
 # Excluded directories (not compiled):
 #   src/ovl8/   - Debug overlay
@@ -430,11 +419,7 @@ endif()
 # updater / release links are unaffected. This single value drives the
 # binary OUTPUT_NAME, the libultraship Context name/shortName (which scopes
 # the app-data directory), and the per-platform package scripts.
-if(SSB64_VERSION STREQUAL "jp")
-    set(SSB64_APP_NAME "SmashBrotatoes-JP")
-else()
-    set(SSB64_APP_NAME "SmashBrotatoes")
-endif()
+set(SSB64_APP_NAME "SmashBrotatoes")
 message(STATUS "SSB64 app identity: ${SSB64_APP_NAME}")
 
 # Asset-recipe fingerprint: identifies the extraction pipeline (torch +
@@ -471,12 +456,7 @@ set(SSB64_COMPILE_DEFS
     # App identity (binary name + libultraship app-data scope). Quoted so
     # it expands to a C string literal at the use site.
     SSB64_APP_NAME=\"${SSB64_APP_NAME}\"
-    # Per-region archive filename: US writes/reads "SmashBrotatoes.o2r"
-    # (preserves the historical name so existing installs keep working);
-    # JP writes/reads "SmashBrotatoes-JP.o2r" so a stray archive in CWD or an
-    # accidental shared install directory can't be picked up by the wrong
-    # build (PortLocateFile falls back to CWD on miss, and the bifurcated
-    # app-data dirs from issue #190 don't catch that case).
+    # Archive filename: writes/reads "SmashBrotatoes.o2r".
     SSB64_O2R_NAME=\"${SSB64_APP_NAME}.o2r\"
 
     # Port mode
@@ -684,8 +664,7 @@ add_executable(${PROJECT_NAME} ${SSB64_SRC_PORT} ${SSB64_DEBUG_TOOLS} $<TARGET_O
 
 # User-facing binary name. The CMake target keeps the historical
 # `ssb64` identifier (matches the repo, build dirs, internal symbols),
-# but the produced executable is `${SSB64_APP_NAME}` — `SmashBrotatoes`
-# (US) or `SmashBrotatoes-JP` (JP), so the two are distinct applications.
+# but the produced executable is `${SSB64_APP_NAME}` (`SmashBrotatoes`).
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "${SSB64_APP_NAME}")
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
@@ -780,14 +759,10 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
     # Game DMA code is no-opped via #ifdef PORT in dma.c, so no /FORCE needed.
     target_compile_options(${PROJECT_NAME} PRIVATE /utf-8)
     # Embed the application icon (Explorer / taskbar / window). The .rc
-    # is generated per-region from port/ssb64.rc.in: US embeds
-    # assets/icon.ico, JP embeds assets/icon-jp.ico. The icon also
-    # surfaces as the .exe's Explorer thumbnail because RC resources
+    # is generated from port/ssb64.rc.in and embeds assets/icon.ico. The icon
+    # also surfaces as the .exe's Explorer thumbnail because RC resources
     # carry over to the PE's icon group.
     set(SSB64_RC_ICON_PATH "${CMAKE_SOURCE_DIR}/assets/icon.ico")
-    if(SSB64_VERSION STREQUAL "jp")
-        set(SSB64_RC_ICON_PATH "${CMAKE_SOURCE_DIR}/assets/icon-jp.ico")
-    endif()
     configure_file(
         ${CMAKE_SOURCE_DIR}/port/ssb64.rc.in
         ${CMAKE_BINARY_DIR}/port/ssb64.rc
